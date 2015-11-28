@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.pepoc.joke.R;
+import com.pepoc.joke.data.user.UserManager;
+import com.pepoc.joke.net.http.HttpRequestManager;
+import com.pepoc.joke.net.http.request.RequestGetJokes;
 
 public class MainActivity extends BaseActivity {
 
@@ -76,9 +79,62 @@ public class MainActivity extends BaseActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            getData();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void getData() {
+//        if (isRefresh) {
+//            page = 1;
+//            isHasMoreData = true;
+//        } else {
+//            if (!isHasMoreData) {
+////				Toast.makeText(context, "没有更多的数据了", Toast.LENGTH_SHORT).show();
+//                return ;
+//            }
+//            page++;
+//        }
+
+//        isRequesting = true;
+
+        RequestGetJokes request = new RequestGetJokes(context, new HttpRequestManager.OnHttpResponseListener() {
+
+            @Override
+            public void onHttpResponse(Object result) {
+//                List<JokeContent> datas = (List<JokeContent>) result;
+//                if (datas.size() < 20) {
+//                    isHasMoreData = false;
+//                }
+//                if (isRefresh) {
+//                    adapter.getDatas().clear();
+//                }
+//                adapter.setDatas(datas);
+//                adapter.notifyDataSetChanged();
+//                swipeRefreshLayout.setRefreshing(false);
+//                footerView.setVisibility(View.VISIBLE);
+//
+//                isRequesting = false;
+            }
+
+            @Override
+            public void onError() {
+//                page--;
+//                isRequesting = false;
+//                log.e("----------onError()---------");
+            }
+        });
+
+        request.putParam("page", String.valueOf(1));
+
+        if (UserManager.getCurrentUser() == null) {
+            request.putParam("userId", "-1");
+        } else {
+            request.putParam("userId", UserManager.getCurrentUser().getUserId());
+        }
+
+        HttpRequestManager.getInstance().sendRequest(request);
     }
 }
