@@ -4,7 +4,9 @@ import android.os.Bundle;
 
 import com.pepoc.joke.R;
 
-public class LoginActivity extends BaseActivity {
+import me.imid.swipebacklayout.lib.app.SwipeBackActivity;
+
+public class LoginActivity extends SwipeBackActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

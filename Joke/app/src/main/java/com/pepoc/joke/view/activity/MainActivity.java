@@ -1,7 +1,10 @@
 package com.pepoc.joke.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
@@ -13,6 +16,8 @@ import com.pepoc.joke.R;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestGetJokes;
+import com.pepoc.joke.view.adapter.MainViewPagerAdapter;
+import com.pepoc.joke.view.fragment.JokeListFragment;
 
 public class MainActivity extends BaseActivity {
 
@@ -47,7 +52,22 @@ public class MainActivity extends BaseActivity {
         mActionBarDrawerToggle.syncState();
         mDrawerLayout.setDrawerListener(mActionBarDrawerToggle);
 
+        ViewPager viewPager = (ViewPager) findViewById(R.id.main_view_pager);
+        if (viewPager != null) {
+            setupViewPager(viewPager);
+        }
 
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.main_tab_layout);
+        tabLayout.setupWithViewPager(viewPager);
+
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFragment(new JokeListFragment(), "Category 1");
+        adapter.addFragment(new JokeListFragment(), "Category 2");
+        adapter.addFragment(new JokeListFragment(), "Category 3");
+        viewPager.setAdapter(adapter);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
@@ -79,7 +99,9 @@ public class MainActivity extends BaseActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
-            getData();
+//            getData();
+            Intent intent = new Intent(context, LoginActivity.class);
+            startActivity(intent);
             return true;
         }
 
