@@ -1,8 +1,8 @@
 package com.pepoc.joke.net.http;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.TextHttpResponseHandler;
 import com.orhanobut.logger.Logger;
 
 import org.json.JSONException;
@@ -61,23 +61,24 @@ public class HttpRequestManager {
 	 */
 	private void sendGetRequest(final HttpRequest request) {
 
-		asyncHttpClient.get(request.context, request.getURL(), requestParamsConvert(request.getParams()), new AsyncHttpResponseHandler() {
+		asyncHttpClient.get(request.context, request.getURL(), requestParamsConvert(request.getParams()), new TextHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-				String response = new String(responseBody);
-				Logger.i("Http response result <<<<<<<<<<<<<<< " + response);
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+				request.getOnHttpResponseListener().onError();
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+				Logger.i("Http response result <<<<<<<<<<<<<<< " + responseString);
 				Object result = null;
 				try {
-					result = request.parseResponseResult(response);
+					result = request.parseResponseResult(responseString);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				request.getOnHttpResponseListener().onHttpResponse(result);
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-				request.getOnHttpResponseListener().onError();
 			}
 		});
 	}
@@ -87,23 +88,24 @@ public class HttpRequestManager {
 	 * @param request
 	 */
 	private void sendPostRequest(final HttpRequest request) {
-		asyncHttpClient.post(request.context, request.getURL(), requestParamsConvert(request.getParams()), new AsyncHttpResponseHandler() {
+		asyncHttpClient.post(request.context, request.getURL(), requestParamsConvert(request.getParams()), new TextHttpResponseHandler() {
 			@Override
-			public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-				String response = new String(responseBody);
-				Logger.i("Http response result <<<<<<<<<<<<<<< " + response);
+			public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+
+				request.getOnHttpResponseListener().onError();
+			}
+
+			@Override
+			public void onSuccess(int statusCode, Header[] headers, String responseString) {
+
+				Logger.i("Http response result <<<<<<<<<<<<<<< " + responseString);
 				Object result = null;
 				try {
-					result = request.parseResponseResult(response);
+					result = request.parseResponseResult(responseString);
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 				request.getOnHttpResponseListener().onHttpResponse(result);
-			}
-
-			@Override
-			public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-				request.getOnHttpResponseListener().onError();
 			}
 		});
 	}
