@@ -21,7 +21,7 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class JokeListFragment extends BaseFragment {
+public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
 
     @Bind(R.id.recyclerview_joke_list)
     RecyclerView recyclerviewJokeList;
@@ -71,6 +71,8 @@ public class JokeListFragment extends BaseFragment {
         recyclerviewJokeList.setLayoutManager(linearLayoutManager);
         jokeListAdapter = new JokeListAdapter(getContext());
         recyclerviewJokeList.setAdapter(jokeListAdapter);
+
+        swiperefreshJokeList.setOnRefreshListener(this);
     }
 
     @Override
@@ -89,6 +91,8 @@ public class JokeListFragment extends BaseFragment {
                 if (datas.size() < 20) {
                     isHasMoreData = false;
                 }
+                jokeListAdapter.getDatas().clear();
+                swiperefreshJokeList.setRefreshing(false);
                 jokeListAdapter.setDatas(datas);
                 jokeListAdapter.notifyDataSetChanged();
             }
@@ -121,5 +125,10 @@ public class JokeListFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        getJokeData();
     }
 }

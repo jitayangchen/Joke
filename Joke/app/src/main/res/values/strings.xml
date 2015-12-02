@@ -9,4 +9,14 @@
 
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="activity_published_name">我发布过的</string>
+    <string name="activity_collected_name">我的收藏</string>
+    <string name="activity_setting_name">设置</string>
+    <string name="activity_write_joke_name">写段子</string>
+    <string name="activity_login_name">登录</string>
+    <string name="activity_register_name">注册</string>
+    <string name="activity_details_name">详情</string>
+
+    <string name="login_or_register">登录/注册</string>
 </resources>

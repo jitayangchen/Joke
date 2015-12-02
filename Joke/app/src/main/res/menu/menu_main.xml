@@ -4,6 +4,6 @@
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 
-    <item android:id="@+id/action_text" android:title="@string/action_settings"
+    <item android:id="@+id/action_publish" android:title="Publish"
         android:orderInCategory="100" app:showAsAction="ifRoom" />
 </menu>

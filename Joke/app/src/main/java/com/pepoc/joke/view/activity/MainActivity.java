@@ -10,8 +10,11 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.pepoc.joke.R;
 import com.pepoc.joke.view.adapter.MainViewPagerAdapter;
 import com.pepoc.joke.view.fragment.JokeListFragment;
@@ -75,6 +78,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
+        Logger.e("navigationView.getHeaderCount() === " + navigationView.getHeaderCount());
+        View headerView = navigationView.getHeaderView(0);
+        TextView tvNickName = (TextView) headerView.findViewById(R.id.tv_nick_name);
+        tvNickName.setText("Yangchen");
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
@@ -101,6 +108,8 @@ public class MainActivity extends BaseActivity {
             Intent intent = new Intent(context, LoginActivity.class);
             startActivity(intent);
             return true;
+        } else if (id == R.id.action_publish) {
+            startActivity(new Intent(context, PublishJokeActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
