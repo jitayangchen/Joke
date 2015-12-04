@@ -8,10 +8,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.pepoc.joke.Config;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
+import com.pepoc.joke.net.ImageLoadding;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,8 +40,7 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
     public void onBindViewHolder(ViewHolder holder, int position) {
         JokeContent jokeContent = datas.get(position);
         holder.tvContent.setText(jokeContent.getContent());
-        String url = Config.IMAGE_HOST + jokeContent.getUserAvatar() + Config.IMAGE_SIZE;
-        Glide.with(context).load(url).centerCrop().into(holder.ivUserAvatar);
+        ImageLoadding.load(context, jokeContent.getUserAvatar(), holder.ivUserAvatar);
         holder.tvCreateTime.setText(jokeContent.getCreateTime());
         holder.tvJokeId.setText(jokeContent.getJokeId());
         holder.tvLikeCount.setText(jokeContent.getLikeCount());

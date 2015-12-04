@@ -2,6 +2,7 @@ package com.pepoc.joke.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 import com.pepoc.joke.R;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestLogin;
+import com.pepoc.joke.observer.LoginObservable;
 import com.pepoc.joke.util.Preference;
 
 import butterknife.Bind;
@@ -26,6 +28,8 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
     Button btnLogin;
     @Bind(R.id.btn_register)
     Button btnRegister;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     private String accountNumber, password;
 
@@ -42,6 +46,7 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
     public void init() {
         super.init();
 
+        toolbar.setTitle(R.string.activity_login);
         etAccountNumber = (EditText) findViewById(R.id.et_account_number);
         etPassword = (EditText) findViewById(R.id.et_password);
         btnLogin = (Button) findViewById(R.id.btn_login);
@@ -82,7 +87,7 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
         password = etPassword.getText().toString();
         if (TextUtils.isEmpty(accountNumber) || TextUtils.isEmpty(password)) {
             Toast.makeText(context, "account number or password null", Toast.LENGTH_SHORT).show();
-            return ;
+            return;
         }
         RequestLogin requestLogin = new RequestLogin(context, new HttpRequestManager.OnHttpResponseListener() {
 
@@ -91,7 +96,7 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
                 boolean isLoginSuccess = (Boolean) result;
                 if (isLoginSuccess) {
                     Toast.makeText(context, "login success", Toast.LENGTH_SHORT).show();
-//                    LoginObservable.getInstance().updateObserver(null);
+                    LoginObservable.getInstance().updateObserver(null);
                     finish();
                     Preference.saveIsLogin(true);
 

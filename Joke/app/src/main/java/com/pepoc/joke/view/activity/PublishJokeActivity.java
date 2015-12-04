@@ -1,6 +1,7 @@
 package com.pepoc.joke.view.activity;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -21,6 +22,8 @@ public class PublishJokeActivity extends BaseSwipeBackActivity {
     EditText etJokeContent;
     @Bind(R.id.btn_submit)
     Button btnSubmit;
+    @Bind(R.id.toolbar)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +38,7 @@ public class PublishJokeActivity extends BaseSwipeBackActivity {
     public void init() {
         super.init();
 
+        toolbar.setTitle(R.string.menu_write_joke);
         btnSubmit.setOnClickListener(new View.OnClickListener() {
 
             @Override

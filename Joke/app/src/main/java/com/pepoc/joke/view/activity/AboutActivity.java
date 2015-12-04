@@ -8,7 +8,7 @@ import com.pepoc.joke.R;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class RegisterActivity extends BaseSwipeBackActivity {
+public class AboutActivity extends BaseSwipeBackActivity {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -16,7 +16,7 @@ public class RegisterActivity extends BaseSwipeBackActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
 
         init();
@@ -26,6 +26,7 @@ public class RegisterActivity extends BaseSwipeBackActivity {
     public void init() {
         super.init();
 
-        toolbar.setTitle(R.string.activity_register);
+        toolbar.setTitle(R.string.action_about);
+        setSupportActionBar(toolbar);
     }
 }

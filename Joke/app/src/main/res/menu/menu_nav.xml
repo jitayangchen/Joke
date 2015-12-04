@@ -18,33 +18,31 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
+            android:id="@+id/menu_write_joke"
             android:icon="@mipmap/ic_launcher"
-            android:title="Home" />
+            android:title="@string/menu_write_joke" />
         <item
-            android:id="@+id/nav_messages"
+            android:id="@+id/menu_published"
             android:icon="@mipmap/ic_launcher"
-            android:title="Messages" />
+            android:title="@string/menu_published" />
         <item
-            android:id="@+id/nav_friends"
+            android:id="@+id/menu_collected"
             android:icon="@mipmap/ic_launcher"
-            android:title="Friends" />
-        <item
-            android:id="@+id/nav_discussion"
-            android:icon="@mipmap/ic_launcher"
-            android:title="Discussion" />
+            android:title="@string/menu_collected" />
     </group>
 
-    <item android:title="Sub items">
+    <item android:title="More">
         <menu>
             <item
+                android:id="@+id/action_settings"
                 android:icon="@mipmap/ic_launcher"
                 android:checkable="true"
-                android:title="Sub item 1" />
+                android:title="@string/action_settings" />
             <item
+                android:id="@+id/action_about"
                 android:icon="@mipmap/ic_launcher"
                 android:checkable="true"
-                android:title="Sub item 2" />
+                android:title="@string/action_about" />
         </menu>
     </item>
 

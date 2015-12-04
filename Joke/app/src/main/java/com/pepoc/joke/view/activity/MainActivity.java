@@ -11,18 +11,24 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.orhanobut.logger.Logger;
 import com.pepoc.joke.R;
+import com.pepoc.joke.data.user.UserInfo;
+import com.pepoc.joke.data.user.UserManager;
+import com.pepoc.joke.net.ImageLoadding;
+import com.pepoc.joke.observer.LoginObservable;
 import com.pepoc.joke.view.adapter.MainViewPagerAdapter;
 import com.pepoc.joke.view.fragment.JokeListFragment;
+
+import java.util.Observable;
+import java.util.Observer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements Observer {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -35,12 +41,16 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
+    private TextView tvNickName;
+    private ImageView ivUserAvatar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+        LoginObservable.getInstance().addObserver(this);
         init();
     }
 
@@ -48,7 +58,7 @@ public class MainActivity extends BaseActivity {
     public void init() {
         super.init();
 
-        toolbar.setTitle(R.string.main_home_page);
+//        toolbar.setTitle(R.string.main_home_page);
         setSupportActionBar(toolbar);
 
         if (navigationView != null) {
@@ -71,24 +81,45 @@ public class MainActivity extends BaseActivity {
     private void setupViewPager(ViewPager viewPager) {
         viewPager.setOffscreenPageLimit(2);
         MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new JokeListFragment(), "Category 1");
-        adapter.addFragment(new JokeListFragment(), "Category 2");
-        adapter.addFragment(new JokeListFragment(), "Category 3");
+        adapter.addFragment(new JokeListFragment(), "逗");
+        adapter.addFragment(new JokeListFragment(), "你");
+        adapter.addFragment(new JokeListFragment(), "玩");
         viewPager.setAdapter(adapter);
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
-        Logger.e("navigationView.getHeaderCount() === " + navigationView.getHeaderCount());
         View headerView = navigationView.getHeaderView(0);
-        TextView tvNickName = (TextView) headerView.findViewById(R.id.tv_nick_name);
-        tvNickName.setText("Yangchen");
+        tvNickName = (TextView) headerView.findViewById(R.id.tv_nick_name);
+        ivUserAvatar = (ImageView) headerView.findViewById(R.id.iv_user_avatar);
+        tvNickName.setText(R.string.login_or_register);
+        tvNickName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (UserManager.getCurrentUser() == null) {
+                    startActivity(new Intent(context, LoginActivity.class));
+                } else {
+
+                }
+            }
+        });
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
-                        menuItem.setChecked(true);
-                        drawerLayout.closeDrawers();
-                        Toast.makeText(MainActivity.this, menuItem.getTitle(), Toast.LENGTH_SHORT).show();
+//                        menuItem.setChecked(true);
+//                        drawerLayout.closeDrawers();
+                        int id = menuItem.getItemId();
+                        if (id == R.id.menu_write_joke) {
+                            startActivity(new Intent(context, PublishJokeActivity.class));
+                        } else if (id == R.id.menu_published) {
+                            startActivity(new Intent(context, PublishedJokeActivity.class));
+                        } else if (id == R.id.menu_collected) {
+                            startActivity(new Intent(context, CollectedJokeActivity.class));
+                        } else if (id == R.id.action_settings) {
+                            startActivity(new Intent(context, SettingActivity.class));
+                        } else if (id == R.id.action_about) {
+                            startActivity(new Intent(context, AboutActivity.class));
+                        }
                         return true;
                     }
                 });
@@ -105,14 +136,22 @@ public class MainActivity extends BaseActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
-            Intent intent = new Intent(context, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(context, SettingActivity.class));
             return true;
         } else if (id == R.id.action_publish) {
             startActivity(new Intent(context, PublishJokeActivity.class));
+            return true;
+        } else if (id == R.id.action_about) {
+            startActivity(new Intent(context, AboutActivity.class));
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void update(Observable observable, Object data) {
+        UserInfo currentUser = UserManager.getCurrentUser();
+        tvNickName.setText(currentUser.getNickName());
+        ImageLoadding.load(context, currentUser.getAvatar(), ivUserAvatar);
+    }
 }

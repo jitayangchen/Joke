@@ -14,14 +14,17 @@ import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestGetJokes;
+import com.pepoc.joke.observer.LoginObservable;
 import com.pepoc.joke.view.adapter.JokeListAdapter;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener {
+public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, Observer {
 
     @Bind(R.id.recyclerview_joke_list)
     RecyclerView recyclerviewJokeList;
@@ -50,6 +53,8 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LoginObservable.getInstance().addObserver(this);
     }
 
     @Override
@@ -129,6 +134,11 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
+        getJokeData();
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
         getJokeData();
     }
 }
