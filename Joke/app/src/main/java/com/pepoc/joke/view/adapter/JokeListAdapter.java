@@ -1,6 +1,7 @@
 package com.pepoc.joke.view.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.net.ImageLoadding;
+import com.pepoc.joke.view.activity.JokeContentActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +47,7 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
         holder.tvJokeId.setText(jokeContent.getJokeId());
         holder.tvLikeCount.setText(jokeContent.getLikeCount());
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
+        holder.tvUserName.setText(jokeContent.getUserNickName());
     }
 
     @Override
@@ -60,7 +63,7 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
         this.datas.addAll(datas);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
 
         @Bind(R.id.iv_user_avatar)
         ImageView ivUserAvatar;
@@ -84,6 +87,15 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, JokeContentActivity.class);
+                    intent.putExtra("JokeContent", datas.get(getLayoutPosition()));
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

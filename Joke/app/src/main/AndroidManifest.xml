@@ -37,12 +37,25 @@
         <activity
             android:name=".view.activity.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />
-        <activity android:name=".view.activity.PublishedJokeActivity"
-            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent"/>
-        <activity android:name=".view.activity.CollectedJokeActivity"
-            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent"/>
-        <activity android:name=".view.activity.AboutActivity"
-            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent"/>
+        <activity
+            android:name=".view.activity.PublishedJokeActivity"
+            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />
+        <activity
+            android:name=".view.activity.CollectedJokeActivity"
+            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />
+        <activity
+            android:name=".view.activity.AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />
+        <activity
+            android:name=".view.activity.JokeContentActivity"
+            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
+        <activity
+            android:name="me.nereo.multi_image_selector.MultiImageSelectorActivity"
+            android:configChanges="orientation|screenSize" />
+        <activity
+            android:name=".view.activity.PersonalCenterActivity"
+            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent.StatusBarColor" />
     </application>
 
 </manifest>

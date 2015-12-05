@@ -16,8 +16,9 @@
             android:id="@+id/iv_user_avatar"
             android:layout_width="100dip"
             android:layout_height="100dip"
+            android:padding="2dip"
             android:layout_centerHorizontal="true"
-            android:background="@mipmap/ic_launcher" />
+            android:background="@android:color/white" />
 
         <TextView
             android:id="@+id/tv_nick_name"

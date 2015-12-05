@@ -12,7 +12,6 @@ import android.widget.Toast;
 import com.pepoc.joke.R;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestLogin;
-import com.pepoc.joke.observer.LoginObservable;
 import com.pepoc.joke.util.Preference;
 
 import butterknife.Bind;
@@ -96,9 +95,7 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
                 boolean isLoginSuccess = (Boolean) result;
                 if (isLoginSuccess) {
                     Toast.makeText(context, "login success", Toast.LENGTH_SHORT).show();
-                    LoginObservable.getInstance().updateObserver(null);
                     finish();
-                    Preference.saveIsLogin(true);
 
                 } else {
                     Toast.makeText(context, "login failed", Toast.LENGTH_SHORT).show();

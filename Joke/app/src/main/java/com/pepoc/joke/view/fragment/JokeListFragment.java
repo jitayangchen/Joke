@@ -21,15 +21,12 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-import butterknife.Bind;
-import butterknife.ButterKnife;
-
 public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, Observer {
 
-    @Bind(R.id.recyclerview_joke_list)
-    RecyclerView recyclerviewJokeList;
-    @Bind(R.id.swiperefresh_joke_list)
-    SwipeRefreshLayout swiperefreshJokeList;
+//    @Bind(R.id.recyclerview_joke_list)
+    private RecyclerView recyclerviewJokeList;
+//    @Bind(R.id.swiperefresh_joke_list)
+    private SwipeRefreshLayout swiperefreshJokeList;
 
     private JokeListAdapter jokeListAdapter;
 
@@ -61,8 +58,9 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_joke_list, container, false);
-        ButterKnife.bind(this, view);
-
+//        ButterKnife.bind(this, view);
+        recyclerviewJokeList = (RecyclerView) view.findViewById(R.id.recyclerview_joke_list);
+        swiperefreshJokeList = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh_joke_list);
         init();
         onLoadData();
         return view;
@@ -129,7 +127,7 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.unbind(this);
+//        ButterKnife.unbind(this);
     }
 
     @Override

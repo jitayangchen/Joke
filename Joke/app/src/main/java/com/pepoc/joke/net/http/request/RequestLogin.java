@@ -5,6 +5,8 @@ import com.pepoc.joke.data.user.UserInfo;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequest;
 import com.pepoc.joke.net.http.HttpRequestManager.OnHttpResponseListener;
+import com.pepoc.joke.observer.LoginObservable;
+import com.pepoc.joke.util.Preference;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +40,8 @@ public class RequestLogin extends HttpRequest {
 
 			UserManager.setCurrentUser(userInfo);
 
+			LoginObservable.getInstance().updateObserver(null);
+			Preference.saveAutoLogin(true);
 			return true;
 		}
 		return false;

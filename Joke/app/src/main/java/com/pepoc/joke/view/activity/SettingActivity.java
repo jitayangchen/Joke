@@ -37,7 +37,7 @@ public class SettingActivity extends BaseSwipeBackActivity {
             @Override
             public void onClick(View v) {
                 UserManager.setCurrentUser(null);
-                Preference.saveIsLogin(false);
+                Preference.saveAutoLogin(false);
                 finish();
             }
         });

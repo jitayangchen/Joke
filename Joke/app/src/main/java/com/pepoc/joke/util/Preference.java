@@ -11,7 +11,7 @@ public class Preference {
 	private static final String ACCOUNT_NUMBER = "account_number";
 	private static final String PASSWORD = "password";
 	private static final String USER_ID = "user_id";
-	private static final String IS_LOGIN = "is_login";
+	private static final String IS_AUTO_LOGIN = "is_auto_login";
 
 	public static void saveAccountNumber(String accountNumber) {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(JokeApplication.context);
@@ -49,16 +49,16 @@ public class Preference {
 		return sp.getString(USER_ID, null);
 	}
 	
-	public static void saveIsLogin(boolean isLogin) {
+	public static void saveAutoLogin(boolean isAutoLogin) {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(JokeApplication.context);
 		Editor editor = sp.edit();
-		editor.putBoolean(IS_LOGIN, isLogin);
+		editor.putBoolean(IS_AUTO_LOGIN, isAutoLogin);
 		editor.commit();
 	}
 	
-	public static boolean isLogin() {
+	public static boolean isAutoLogin() {
 		SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(JokeApplication.context);
-		return sp.getBoolean(IS_LOGIN, false);
+		return sp.getBoolean(IS_AUTO_LOGIN, false);
 	}
 	
 }
