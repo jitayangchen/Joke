@@ -53,7 +53,8 @@ public class CollectedJokeActivity extends BaseSwipeBackActivity implements Swip
         super.init();
 
         toolbar.setTitle(R.string.menu_collected);
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         swiperefreshCollectedJoke.setColorSchemeResources(R.color.colorAccent);
         swiperefreshCollectedJoke.setOnRefreshListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);

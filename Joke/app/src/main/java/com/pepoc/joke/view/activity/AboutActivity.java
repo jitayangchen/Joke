@@ -28,5 +28,6 @@ public class AboutActivity extends BaseSwipeBackActivity {
 
         toolbar.setTitle(R.string.action_about);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

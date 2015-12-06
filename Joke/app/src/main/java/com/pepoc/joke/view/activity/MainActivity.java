@@ -319,6 +319,7 @@ public class MainActivity extends BaseActivity implements Observer {
             @Override
             public void onHttpResponse(Object result) {
                 ImageLoadding.load(context, key, ivUserAvatar);
+                UserManager.getCurrentUser().setAvatar(key);
             }
 
             @Override

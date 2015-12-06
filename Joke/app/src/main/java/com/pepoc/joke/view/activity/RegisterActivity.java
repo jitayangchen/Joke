@@ -27,5 +27,7 @@ public class RegisterActivity extends BaseSwipeBackActivity {
         super.init();
 
         toolbar.setTitle(R.string.activity_register);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 }

@@ -39,6 +39,9 @@ public class PublishJokeActivity extends BaseSwipeBackActivity {
         super.init();
 
         toolbar.setTitle(R.string.menu_write_joke);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         btnSubmit.setOnClickListener(new View.OnClickListener() {
 
             @Override

@@ -46,6 +46,8 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
         super.init();
 
         toolbar.setTitle(R.string.activity_login);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         etAccountNumber = (EditText) findViewById(R.id.et_account_number);
         etPassword = (EditText) findViewById(R.id.et_password);
         btnLogin = (Button) findViewById(R.id.btn_login);

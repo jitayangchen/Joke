@@ -33,6 +33,8 @@ public class SettingActivity extends BaseSwipeBackActivity {
         super.init();
 
         toolbar.setTitle(R.string.action_settings);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

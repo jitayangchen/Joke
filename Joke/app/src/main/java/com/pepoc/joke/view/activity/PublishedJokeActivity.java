@@ -52,7 +52,8 @@ public class PublishedJokeActivity extends BaseSwipeBackActivity implements Swip
         super.init();
 
         toolbar.setTitle(R.string.menu_published);
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         swiperefreshPublishedJoke.setColorSchemeResources(R.color.colorAccent);
         swiperefreshPublishedJoke.setOnRefreshListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);

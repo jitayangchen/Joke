@@ -63,7 +63,8 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
         super.init();
 
         toolbar.setTitle(R.string.activity_joke_content);
-
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         swiperefreshJokeContent.setColorSchemeResources(R.color.colorAccent);
         swiperefreshJokeContent.setOnRefreshListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);

@@ -26,6 +26,7 @@ public class FabImageView extends ImageView {
     private Context context;
     private boolean isShow = true;
     private WindowInsetsCompat mLastInsets = null;
+    private int minimumHeight = -1;
 
     public FabImageView(Context context) {
         super(context);
@@ -77,7 +78,7 @@ public class FabImageView extends ImageView {
             // First, let's get the visible rect of the dependency
             final Rect rect = mTmpRect;
             ViewGroupUtils.getDescendantRect(parent, appBarLayout, rect);
-
+//            Logger.i("child.getMinimumHeightForVisibleOverlappingContent(appBarLayout) = " + child.getMinimumHeightForVisibleOverlappingContent(appBarLayout));
             if (rect.bottom <= child.getMinimumHeightForVisibleOverlappingContent(appBarLayout)) {
                 // If the anchor's bottom is below the seam, we'll animate our FAB out
                 child.hide();
@@ -153,6 +154,9 @@ public class FabImageView extends ImageView {
     }
 
     final int getMinimumHeightForVisibleOverlappingContent(AppBarLayout appBarLayout) {
+        if (minimumHeight != -1) {
+            return minimumHeight;
+        }
         getLastInsets(appBarLayout);
         final int topInset = mLastInsets != null ? mLastInsets.getSystemWindowInsetTop() : 0;
         final int minHeight = ViewCompat.getMinimumHeight(appBarLayout);
@@ -163,9 +167,8 @@ public class FabImageView extends ImageView {
 
         // Otherwise, we'll use twice the min height of our last child
         final int childCount = appBarLayout.getChildCount();
-        return childCount >= 1
-                ? (ViewCompat.getMinimumHeight(appBarLayout.getChildAt(childCount - 1)) * 2) + topInset
-                : 0;
+        minimumHeight = childCount >= 1 ? (ViewCompat.getMinimumHeight(appBarLayout.getChildAt(childCount - 1)) * 2) + topInset : 0;
+        return minimumHeight;
     }
 
 }
