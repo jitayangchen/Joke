@@ -36,6 +36,9 @@ public class RequestGetCollectedJokes extends HttpRequest {
 				jokeContent.setUserId(jokesList.getString("userId"));
 				jokeContent.setUserNickName(jokesList.getString("nickName"));
 				jokeContent.setUserAvatar(jokesList.getString("avatar"));
+				jokeContent.setCollectCount(jokesList.getString("collectCount"));
+				jokeContent.setIslike(jokesList.getString("islike"));
+				jokeContent.setLikeCount(jokesList.getString("likeCount"));
 				datas.add(jokeContent);
 			}
 		}

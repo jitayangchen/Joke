@@ -20,7 +20,8 @@
             android:layout_height="match_parent"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
+            app:expandedTitleMarginStart="30dp"
+            app:expandedTitleTextAppearance="@style/ExpandedTitleText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView

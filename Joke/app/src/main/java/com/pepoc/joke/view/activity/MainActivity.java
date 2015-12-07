@@ -120,7 +120,11 @@ public class MainActivity extends BaseActivity implements Observer {
                 if (UserManager.getCurrentUser() == null) {
                     startActivity(new Intent(context, LoginActivity.class));
                 } else {
-                    startActivity(new Intent(context, PersonalCenterActivity.class));
+                    Intent intent = new Intent(context, PersonalCenterActivity.class);
+                    intent.putExtra("UserId", UserManager.getCurrentUser().getUserId());
+                    intent.putExtra("NickName", UserManager.getCurrentUser().getNickName());
+                    intent.putExtra("avatar", UserManager.getCurrentUser().getAvatar());
+                    startActivity(intent);
                 }
             }
         });

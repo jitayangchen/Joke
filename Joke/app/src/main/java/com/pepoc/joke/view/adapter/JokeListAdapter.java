@@ -13,6 +13,7 @@ import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.net.ImageLoadding;
 import com.pepoc.joke.view.activity.JokeContentActivity;
+import com.pepoc.joke.view.activity.PersonalCenterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +49,18 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
         holder.tvLikeCount.setText(jokeContent.getLikeCount());
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
         holder.tvUserName.setText(jokeContent.getUserNickName());
+
+        if ("1".equals(jokeContent.getIslike())) {
+            holder.btnLikeJoke.setText("喜欢:" + "OK");
+        } else {
+            holder.btnLikeJoke.setText("喜欢:" + "NO");
+        }
+
+        if ("1".equals(jokeContent.getIscollect())) {
+            holder.btnCollectJoke.setText("收藏:" + "OK");
+        } else {
+            holder.btnCollectJoke.setText("收藏:" + "NO");
+        }
     }
 
     @Override
@@ -93,6 +106,18 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
                 public void onClick(View v) {
                     Intent intent = new Intent(context, JokeContentActivity.class);
                     intent.putExtra("JokeContent", datas.get(getLayoutPosition()));
+                    context.startActivity(intent);
+                }
+            });
+
+            ivUserAvatar.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    JokeContent jokeContent = datas.get(getLayoutPosition());
+                    Intent intent = new Intent(context, PersonalCenterActivity.class);
+                    intent.putExtra("UserId", jokeContent.getUserId());
+                    intent.putExtra("NickName", jokeContent.getUserNickName());
+                    intent.putExtra("avatar", jokeContent.getUserAvatar());
                     context.startActivity(intent);
                 }
             });

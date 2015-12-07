@@ -50,9 +50,21 @@ public class PersonalCenterAdapter extends RecyclerView.Adapter<PersonalCenterAd
         ImageLoadding.load(context, jokeContent.getUserAvatar(), holder.ivUserAvatar);
         holder.tvCreateTime.setText(jokeContent.getCreateTime());
         holder.tvJokeId.setText(jokeContent.getJokeId());
+        holder.tvUserName.setText(jokeContent.getUserNickName());
         holder.tvLikeCount.setText(jokeContent.getLikeCount());
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
-        holder.tvUserName.setText(jokeContent.getUserNickName());
+
+        if ("1".equals(jokeContent.getIslike())) {
+            holder.btnLikeJoke.setText("喜欢:" + "OK");
+        } else {
+            holder.btnLikeJoke.setText("喜欢:" + "NO");
+        }
+
+        if ("1".equals(jokeContent.getIscollect())) {
+            holder.btnCollectJoke.setText("收藏:" + "OK");
+        } else {
+            holder.btnCollectJoke.setText("收藏:" + "NO");
+        }
     }
 
     @Override

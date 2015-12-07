@@ -6,5 +6,6 @@
     <dimen name="personal_center_avatar_margin">20dp</dimen>
 
     <dimen name="font_size_username">20sp</dimen>
+    <dimen name="base_font_size">22sp</dimen>
 
 </resources>

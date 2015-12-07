@@ -41,5 +41,9 @@
         <!--<item name="android:activityCloseEnterAnimation">@anim/slide_out_left</item>-->
         <item name="android:activityCloseExitAnimation">@anim/slide_out_left</item>
     </style>
+    
+    <style name="ExpandedTitleText">
+        <item name="android:textSize">@dimen/base_font_size</item>
+    </style>
 
 </resources>
