@@ -33,7 +33,8 @@
             android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />
         <activity
             android:name=".view.activity.PublishJokeActivity"
-            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />
+            android:theme="@style/AppTheme.NoActionBar.WindowTranslucent"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".view.activity.SettingActivity"
             android:theme="@style/AppTheme.NoActionBar.WindowTranslucent" />

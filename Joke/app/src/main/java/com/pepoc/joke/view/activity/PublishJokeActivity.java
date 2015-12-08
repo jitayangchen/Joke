@@ -1,29 +1,52 @@
 package com.pepoc.joke.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestAddJoke;
+import com.pepoc.joke.net.http.request.RequestUpToken;
+import com.pepoc.joke.net.http.request.RequestUpdateUserInfo;
+import com.qiniu.android.http.ResponseInfo;
+import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UploadManager;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import me.nereo.multi_image_selector.MultiImageSelectorActivity;
 
-public class PublishJokeActivity extends BaseSwipeBackActivity {
+public class PublishJokeActivity extends BaseSwipeBackActivity implements View.OnClickListener {
 
     @Bind(R.id.et_joke_content)
     EditText etJokeContent;
     @Bind(R.id.btn_submit)
-    Button btnSubmit;
+    ImageButton btnSubmit;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.btn_add_photo)
+    ImageButton btnAddPhoto;
+    @Bind(R.id.iv_joke_photo)
+    ImageView ivJokePhoto;
+
+    private final static int REQUEST_IMAGE = 1000;
+    private String key;
+    private String uploadToken;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,13 +65,36 @@ public class PublishJokeActivity extends BaseSwipeBackActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+        btnSubmit.setOnClickListener(this);
+        btnAddPhoto.setOnClickListener(this);
+        ivJokePhoto.setOnClickListener(this);
+    }
 
-            @Override
-            public void onClick(View v) {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_submit:
                 addJoke();
+                break;
+            case R.id.btn_add_photo:
+                openGallery();
+                break;
+            case R.id.iv_joke_photo:
+
+                break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == REQUEST_IMAGE){
+            if(resultCode == RESULT_OK){
+                // Get the result list of select image paths
+                List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
+                upLoadAvatar(path.get(0));
             }
-        });
+        }
     }
 
     private void addJoke() {
@@ -84,5 +130,94 @@ public class PublishJokeActivity extends BaseSwipeBackActivity {
         requestAddJoke.putParam("user_id", uid);
 
         HttpRequestManager.getInstance().sendRequest(requestAddJoke);
+    }
+
+    /**
+     * 上传头像
+     */
+    private void upLoadAvatar(final String path) {
+        RequestUpToken requestUpToken = new RequestUpToken(context, new HttpRequestManager.OnHttpResponseListener() {
+
+            @Override
+            public void onHttpResponse(Object result) {
+                try {
+                    JSONObject obj = new JSONObject((String)result);
+                    String status = obj.getString("status");
+                    if ("1".equals(status)) {
+                        uploadToken = obj.getString("upToken");
+                    }
+                } catch (JSONException e) {
+                    Logger.e("get uptoken");
+                }
+
+                // 七牛上传
+                UploadManager uploadManager = new UploadManager();
+                uploadManager.put(path, key, uploadToken, new UpCompletionHandler() {
+
+                    @Override
+                    public void complete(String key, ResponseInfo info, JSONObject response) {
+                        if (info.isOK()) {
+                            Log.i("qiniu", "=== upload success ===");
+                            Toast.makeText(context, "upload success", Toast.LENGTH_SHORT).show();
+                            uploadAvatarKey();
+                        } else {
+                            Log.i("qiniu", "fail");
+                            Toast.makeText(context, "upload fail", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, null);
+            }
+
+            @Override
+            public void onError() {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        key = "pj_avatar_" + System.currentTimeMillis();
+        requestUpToken.putParam("key", key);
+
+        HttpRequestManager.getInstance().sendRequest(requestUpToken);
+    }
+
+    /**
+     * 上传头像
+     */
+    private void uploadAvatarKey() {
+        RequestUpdateUserInfo requestUpdateUserInfo = new RequestUpdateUserInfo(context, new HttpRequestManager.OnHttpResponseListener() {
+
+            @Override
+            public void onHttpResponse(Object result) {
+//                ImageLoadding.load(context, key, ivUserAvatar);
+//                UserManager.getCurrentUser().setAvatar(key);
+            }
+
+            @Override
+            public void onError() {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        requestUpdateUserInfo.putParam("userId", UserManager.getCurrentUser().getUserId());
+        requestUpdateUserInfo.putParam("avatar", key);
+
+        HttpRequestManager.getInstance().sendRequest(requestUpdateUserInfo);
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(context, MultiImageSelectorActivity.class);
+
+        // whether show camera
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+
+        // max select image amount
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9);
+
+        // select mode (MultiImageSelectorActivity.MODE_SINGLE OR MultiImageSelectorActivity.MODE_MULTI)
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+
+        startActivityForResult(intent, REQUEST_IMAGE);
     }
 }

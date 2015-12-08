@@ -16,6 +16,7 @@
     <item
         android:id="@+id/action_publish"
         android:orderInCategory="100"
+        android:icon="@mipmap/ic_action_edit"
         android:title="@string/menu_write_joke"
         app:showAsAction="ifRoom" />
 </menu>

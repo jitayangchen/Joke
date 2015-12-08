@@ -25,12 +25,12 @@ import butterknife.ButterKnife;
 /**
  * Created by Yangchen on 2015/11/30.
  */
-public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHolder> {
+public class CollectedJokeAdapter extends RecyclerView.Adapter<CollectedJokeAdapter.ViewHolder> {
 
     private Context context;
     private List<JokeContent> datas = new ArrayList<>();
 
-    public JokeListAdapter(Context context) {
+    public CollectedJokeAdapter(Context context) {
         this.context = context;
     }
 
@@ -57,11 +57,7 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
 //            holder.btnLikeJoke.setText("喜欢:" + "NO");
         }
 
-        if ("1".equals(jokeContent.getIscollect())) {
-//            holder.btnCollectJoke.setText("收藏:" + "OK");
-        } else {
-//            holder.btnCollectJoke.setText("收藏:" + "NO");
-        }
+//        holder.btnCollectJoke.setText("收藏:");
     }
 
     @Override

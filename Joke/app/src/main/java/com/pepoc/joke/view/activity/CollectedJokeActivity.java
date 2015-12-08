@@ -11,7 +11,7 @@ import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestGetCollectedJokes;
-import com.pepoc.joke.view.adapter.JokeListAdapter;
+import com.pepoc.joke.view.adapter.CollectedJokeAdapter;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class CollectedJokeActivity extends BaseSwipeBackActivity implements Swip
     @Bind(R.id.swiperefresh_collected_joke)
     SwipeRefreshLayout swiperefreshCollectedJoke;
 
-    private JokeListAdapter jokeListAdapter;
+    private CollectedJokeAdapter collectedJokeAdapter;
 
     /** 是否还有更多数据 */
     private boolean isHasMoreData = true;
@@ -59,8 +59,8 @@ public class CollectedJokeActivity extends BaseSwipeBackActivity implements Swip
         swiperefreshCollectedJoke.setOnRefreshListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerviewCollectedJoke.setLayoutManager(linearLayoutManager);
-        jokeListAdapter = new JokeListAdapter(context);
-        recyclerviewCollectedJoke.setAdapter(jokeListAdapter);
+        collectedJokeAdapter = new CollectedJokeAdapter(context);
+        recyclerviewCollectedJoke.setAdapter(collectedJokeAdapter);
     }
 
     @Override
@@ -93,17 +93,17 @@ public class CollectedJokeActivity extends BaseSwipeBackActivity implements Swip
                     isHasMoreData = false;
                 }
                 if (isRefresh) {
-                    jokeListAdapter.getDatas().clear();
+                    collectedJokeAdapter.getDatas().clear();
                 }
-                jokeListAdapter.setDatas(datas);
-                jokeListAdapter.notifyDataSetChanged();
+                collectedJokeAdapter.setDatas(datas);
+                collectedJokeAdapter.notifyDataSetChanged();
                 swiperefreshCollectedJoke.setRefreshing(false);
             }
 
             @Override
             public void onError() {
                 // TODO Auto-generated method stub
-
+                swiperefreshCollectedJoke.setRefreshing(false);
             }
         });
 

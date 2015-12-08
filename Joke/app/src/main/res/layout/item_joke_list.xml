@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="10dip" >
+    android:padding="10dp" >
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -11,15 +11,15 @@
 
         <ImageView
             android:id="@+id/iv_user_avatar"
-            android:layout_width="50dip"
-            android:layout_height="50dip" />
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
 
         <TextView
             android:id="@+id/tv_user_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="10dp"
             android:layout_toRightOf="@id/iv_user_avatar"
             android:textColor="@color/colorPrimary"
             android:textSize="18sp" />
@@ -41,42 +41,41 @@
         android:id="@+id/tv_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dip"
+        android:layout_marginTop="10dp"
         android:lineSpacingExtra="5sp"
         android:textSize="18sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal" >
 
-        <TextView
+        <ImageButton
             android:id="@+id/btn_like_joke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="like"
-            android:textSize="20sp" />
+            android:background="@mipmap/ic_action_good" />
 
         <TextView
             android:id="@+id/tv_like_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dip"
+            android:layout_marginLeft="5dp"
             android:textSize="20sp" />
 
-        <TextView
+        <ImageButton
             android:id="@+id/btn_collect_joke"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="collect"
-            android:layout_marginLeft="15dip"
-            android:textSize="20sp" />
+            android:layout_marginLeft="15dp"
+            android:background="@mipmap/ic_action_important"/>
 
         <TextView
             android:id="@+id/tv_collect_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dip"
+            android:layout_marginLeft="5dp"
             android:textSize="20sp" />
     </LinearLayout>
 

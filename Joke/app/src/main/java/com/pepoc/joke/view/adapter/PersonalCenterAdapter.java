@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -55,15 +56,15 @@ public class PersonalCenterAdapter extends RecyclerView.Adapter<PersonalCenterAd
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
 
         if ("1".equals(jokeContent.getIslike())) {
-            holder.btnLikeJoke.setText("喜欢:" + "OK");
+//            holder.btnLikeJoke.setText("喜欢:" + "OK");
         } else {
-            holder.btnLikeJoke.setText("喜欢:" + "NO");
+//            holder.btnLikeJoke.setText("喜欢:" + "NO");
         }
 
         if ("1".equals(jokeContent.getIscollect())) {
-            holder.btnCollectJoke.setText("收藏:" + "OK");
+//            holder.btnCollectJoke.setText("收藏:" + "OK");
         } else {
-            holder.btnCollectJoke.setText("收藏:" + "NO");
+//            holder.btnCollectJoke.setText("收藏:" + "NO");
         }
     }
 
@@ -98,11 +99,11 @@ public class PersonalCenterAdapter extends RecyclerView.Adapter<PersonalCenterAd
         @Bind(R.id.tv_content)
         TextView tvContent;
         @Bind(R.id.btn_like_joke)
-        TextView btnLikeJoke;
+        ImageButton btnLikeJoke;
         @Bind(R.id.tv_like_count)
         TextView tvLikeCount;
         @Bind(R.id.btn_collect_joke)
-        TextView btnCollectJoke;
+        ImageButton btnCollectJoke;
         @Bind(R.id.tv_collect_count)
         TextView tvCollectCount;
 
