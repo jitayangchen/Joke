@@ -89,19 +89,20 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
         RequestGetJokes requestGetJokes = new RequestGetJokes(getContext(), new HttpRequestManager.OnHttpResponseListener() {
             @Override
             public void onHttpResponse(Object result) {
+                swiperefreshJokeList.setRefreshing(false);
 
                 List<JokeContent> datas = (List<JokeContent>) result;
                 if (datas.size() < 20) {
                     isHasMoreData = false;
                 }
                 jokeListAdapter.getDatas().clear();
-                swiperefreshJokeList.setRefreshing(false);
                 jokeListAdapter.setDatas(datas);
                 jokeListAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onError() {
+                swiperefreshJokeList.setRefreshing(false);
                 page--;
             }
         });

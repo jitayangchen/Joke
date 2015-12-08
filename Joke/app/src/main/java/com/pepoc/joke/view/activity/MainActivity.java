@@ -131,18 +131,7 @@ public class MainActivity extends BaseActivity implements Observer {
         ivUserAvatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, MultiImageSelectorActivity.class);
-
-// whether show camera
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
-
-// max select image amount
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9);
-
-// select mode (MultiImageSelectorActivity.MODE_SINGLE OR MultiImageSelectorActivity.MODE_MULTI)
-                intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
-
-                startActivityForResult(intent, REQUEST_IMAGE);
+                openGallery();
             }
         });
         navigationView.setNavigationItemSelectedListener(
@@ -337,5 +326,20 @@ public class MainActivity extends BaseActivity implements Observer {
         requestUpdateUserInfo.putParam("avatar", key);
 
         HttpRequestManager.getInstance().sendRequest(requestUpdateUserInfo);
+    }
+
+    private void openGallery() {
+        Intent intent = new Intent(context, MultiImageSelectorActivity.class);
+
+        // whether show camera
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SHOW_CAMERA, true);
+
+        // max select image amount
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_COUNT, 9);
+
+        // select mode (MultiImageSelectorActivity.MODE_SINGLE OR MultiImageSelectorActivity.MODE_MULTI)
+        intent.putExtra(MultiImageSelectorActivity.EXTRA_SELECT_MODE, MultiImageSelectorActivity.MODE_SINGLE);
+
+        startActivityForResult(intent, REQUEST_IMAGE);
     }
 }

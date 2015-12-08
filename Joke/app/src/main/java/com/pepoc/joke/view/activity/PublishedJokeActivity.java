@@ -103,7 +103,7 @@ public class PublishedJokeActivity extends BaseSwipeBackActivity implements Swip
             @Override
             public void onError() {
                 // TODO Auto-generated method stub
-
+                swiperefreshPublishedJoke.setRefreshing(false);
             }
         });
 

@@ -112,7 +112,7 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
             @Override
             public void onError() {
                 // TODO Auto-generated method stub
-
+                swiperefreshJokeContent.setRefreshing(false);
             }
         });
 
