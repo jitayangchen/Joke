@@ -8,11 +8,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeComment;
 import com.pepoc.joke.data.bean.JokeContent;
+import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.ImageLoadding;
+import com.pepoc.joke.net.http.HttpRequestManager;
+import com.pepoc.joke.net.http.request.RequestCollectJoke;
+import com.pepoc.joke.net.http.request.RequestLikeJoke;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,6 +99,20 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         public ContentViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+
+            btnLikeJoke.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    likeJoke();
+                }
+            });
+
+            btnCollectJoke.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    collectJoke();
+                }
+            });
         }
     }
 
@@ -110,5 +129,51 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
+    }
+
+    private void collectJoke() {
+        RequestCollectJoke request = new RequestCollectJoke(context, new HttpRequestManager.OnHttpResponseListener() {
+
+            @Override
+            public void onHttpResponse(Object result) {
+                String status = (String) result;
+                if ("1".equals(status)) {
+                    Toast.makeText(context, "Collect Success", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError() {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        request.putParam("jokeId", jokeContent.getJokeId());
+        request.putParam("userId", UserManager.getCurrentUser().getUserId());
+        HttpRequestManager.getInstance().sendRequest(request);
+    }
+
+    private void likeJoke() {
+        RequestLikeJoke request = new RequestLikeJoke(context, new HttpRequestManager.OnHttpResponseListener() {
+
+            @Override
+            public void onHttpResponse(Object result) {
+                String status = (String) result;
+                if ("1".equals(status)) {
+                    Toast.makeText(context, "Like Success", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onError() {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        request.putParam("jokeId", jokeContent.getJokeId());
+        request.putParam("userId", UserManager.getCurrentUser().getUserId());
+        HttpRequestManager.getInstance().sendRequest(request);
     }
 }

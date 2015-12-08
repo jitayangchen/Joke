@@ -1,5 +1,6 @@
 package com.pepoc.joke.view.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -28,6 +29,8 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
 
     private ImageView ivPersonalBackground;
 
+    private CollapsingToolbarLayout collapsingToolbar;
+
     /** 是否还有更多数据 */
     private boolean isHasMoreData = true;
 
@@ -41,8 +44,6 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_center);
 
-//        Intent intent = getIntent();
-//        intent
         init();
     }
 
@@ -50,11 +51,17 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
     public void init() {
         super.init();
 
+        Intent intent = getIntent();
+        String userId = intent.getStringExtra("UserId");
+        String nickName = intent.getStringExtra("NickName");
+        String avatar = intent.getStringExtra("avatar");
+        UserManager.getCurrentUser().getUserId();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle(UserManager.getCurrentUser().getNickName());
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        collapsingToolbar.setTitle(nickName);
         ivPersonalBackground = (ImageView) findViewById(R.id.iv_personal_background);
         ivAvatar = (ImageView) findViewById(R.id.iv_avatar);
 
@@ -67,9 +74,9 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         ivPersonalBackground.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
 
-        ImageLoadding.load(context, UserManager.getCurrentUser().getAvatar(), ivAvatar);
+        ImageLoadding.load(context, avatar, ivAvatar);
 
-        getData(true);
+        getData(true, userId);
     }
 
     @Override
@@ -88,7 +95,7 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
      * 获取数据
      * @param isRefresh true:是刷新     false:加载更多
      */
-    private void getData(final boolean isRefresh) {
+    private void getData(final boolean isRefresh, String userId) {
         if (isRefresh) {
             page = 1;
             isHasMoreData = true;
@@ -123,7 +130,7 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         });
 
         request.putParam("page", String.valueOf(page));
-        request.putParam("userId", UserManager.getCurrentUser().getUserId());
+        request.putParam("userId", userId);
 
         HttpRequestManager.getInstance().sendRequest(request);
     }
