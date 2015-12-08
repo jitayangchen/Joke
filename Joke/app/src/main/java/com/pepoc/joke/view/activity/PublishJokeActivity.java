@@ -11,13 +11,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.orhanobut.logger.Logger;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestAddJoke;
 import com.pepoc.joke.net.http.request.RequestUpToken;
-import com.pepoc.joke.net.http.request.RequestUpdateUserInfo;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
 import com.qiniu.android.storage.UploadManager;
@@ -47,6 +47,7 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
     private final static int REQUEST_IMAGE = 1000;
     private String key;
     private String uploadToken;
+    private String imageUrl = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +81,7 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
                 openGallery();
                 break;
             case R.id.iv_joke_photo:
-
+                openGallery();
                 break;
         }
     }
@@ -92,7 +93,8 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
             if(resultCode == RESULT_OK){
                 // Get the result list of select image paths
                 List<String> path = data.getStringArrayListExtra(MultiImageSelectorActivity.EXTRA_RESULT);
-                upLoadAvatar(path.get(0));
+                Glide.with(context).load(path.get(0)).centerCrop().into(ivJokePhoto);
+                imageUrl = path.get(0);
             }
         }
     }
@@ -102,8 +104,18 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
             Toast.makeText(context, "not login", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        if (TextUtils.isEmpty(imageUrl)) {
+            addJokeContent();
+        } else {
+            upLoadImage(imageUrl);
+        }
+    }
+
+    private void addJokeContent() {
+
         String content = etJokeContent.getText().toString();
-        if (TextUtils.isEmpty(content)) {
+        if (TextUtils.isEmpty(content) && TextUtils.isEmpty(imageUrl)) {
             Toast.makeText(context, "content null", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -128,6 +140,9 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
 
         requestAddJoke.putParam("content", content);
         requestAddJoke.putParam("user_id", uid);
+        if (!TextUtils.isEmpty(imageUrl)) {
+            requestAddJoke.putParam("images_url", key);
+        }
 
         HttpRequestManager.getInstance().sendRequest(requestAddJoke);
     }
@@ -135,7 +150,7 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
     /**
      * 上传头像
      */
-    private void upLoadAvatar(final String path) {
+    private void upLoadImage(final String path) {
         RequestUpToken requestUpToken = new RequestUpToken(context, new HttpRequestManager.OnHttpResponseListener() {
 
             @Override
@@ -159,7 +174,7 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
                         if (info.isOK()) {
                             Log.i("qiniu", "=== upload success ===");
                             Toast.makeText(context, "upload success", Toast.LENGTH_SHORT).show();
-                            uploadAvatarKey();
+                            addJokeContent();
                         } else {
                             Log.i("qiniu", "fail");
                             Toast.makeText(context, "upload fail", Toast.LENGTH_SHORT).show();
@@ -175,35 +190,10 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
             }
         });
 
-        key = "pj_avatar_" + System.currentTimeMillis();
+        key = "pj_joke_image_" + System.currentTimeMillis();
         requestUpToken.putParam("key", key);
 
         HttpRequestManager.getInstance().sendRequest(requestUpToken);
-    }
-
-    /**
-     * 上传头像
-     */
-    private void uploadAvatarKey() {
-        RequestUpdateUserInfo requestUpdateUserInfo = new RequestUpdateUserInfo(context, new HttpRequestManager.OnHttpResponseListener() {
-
-            @Override
-            public void onHttpResponse(Object result) {
-//                ImageLoadding.load(context, key, ivUserAvatar);
-//                UserManager.getCurrentUser().setAvatar(key);
-            }
-
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        requestUpdateUserInfo.putParam("userId", UserManager.getCurrentUser().getUserId());
-        requestUpdateUserInfo.putParam("avatar", key);
-
-        HttpRequestManager.getInstance().sendRequest(requestUpdateUserInfo);
     }
 
     private void openGallery() {

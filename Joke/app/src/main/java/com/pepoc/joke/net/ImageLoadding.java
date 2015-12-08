@@ -12,8 +12,8 @@ import com.pepoc.joke.Config;
 public class ImageLoadding {
 
     public static void load(Context context, String url, ImageView imageView) {
-        String imageUrl = Config.IMAGE_HOST + url + Config.IMAGE_SIZE;
+        String imageUrl = Config.IMAGE_HOST + url;
 //        Logger.i(imageUrl);
-        Glide.with(context).load(imageUrl).centerCrop().into(imageView);
+        Glide.with(context).load(imageUrl).into(imageView);
     }
 }

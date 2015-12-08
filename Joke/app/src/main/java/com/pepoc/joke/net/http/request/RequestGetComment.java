@@ -22,7 +22,7 @@ public class RequestGetComment extends HttpRequest {
 
 	@Override
 	public Object parseResponseResult(String result) throws JSONException {
-		List<JokeComment> jokeComments = new ArrayList<JokeComment>();
+		List<JokeComment> jokeComments = new ArrayList<>();
 		JSONObject obj = new JSONObject(result);
 		String status = obj.getString("status");
 		if ("1".equals(status)) {

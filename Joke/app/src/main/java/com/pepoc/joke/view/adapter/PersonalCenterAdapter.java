@@ -54,7 +54,7 @@ public class PersonalCenterAdapter extends RecyclerView.Adapter<PersonalCenterAd
         holder.tvUserName.setText(jokeContent.getUserNickName());
         holder.tvLikeCount.setText(jokeContent.getLikeCount());
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
-
+        ImageLoadding.load(context, jokeContent.getImageUrl(), holder.ivJokeImage);
         if ("1".equals(jokeContent.getIslike())) {
 //            holder.btnLikeJoke.setText("喜欢:" + "OK");
         } else {
@@ -98,6 +98,8 @@ public class PersonalCenterAdapter extends RecyclerView.Adapter<PersonalCenterAd
         TextView tvJokeId;
         @Bind(R.id.tv_content)
         TextView tvContent;
+        @Bind(R.id.iv_joke_image)
+        ImageView ivJokeImage;
         @Bind(R.id.btn_like_joke)
         ImageButton btnLikeJoke;
         @Bind(R.id.tv_like_count)

@@ -32,7 +32,7 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
 
     private Context context;
     private JokeContent jokeContent;
-    private List<JokeComment> jokeComments = new ArrayList<JokeComment>();
+    private List<JokeComment> jokeComments = new ArrayList<>();
 
     public JokeContentAdapter(Context context) {
         this.context = context;
@@ -56,6 +56,7 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ImageLoadding.load(context, jokeContent.getUserAvatar(), contentViewHolder.ivUserAvatar);
             contentViewHolder.tvUserName.setText(jokeContent.getUserNickName());
             contentViewHolder.tvContent.setText(jokeContent.getContent());
+            ImageLoadding.load(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
         } else {
             CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             JokeComment jokeComment = jokeComments.get(position - 1);
@@ -95,6 +96,8 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Button btnCollectJoke;
         @Bind(R.id.btn_like_joke)
         Button btnLikeJoke;
+        @Bind(R.id.iv_joke_image)
+        ImageView ivJokeImage;
 
         public ContentViewHolder(View itemView) {
             super(itemView);

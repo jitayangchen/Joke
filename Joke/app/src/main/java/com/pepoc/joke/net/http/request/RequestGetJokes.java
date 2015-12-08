@@ -41,6 +41,7 @@ public class RequestGetJokes extends HttpRequest {
 					jokeContent.setCollectCount(jokesList.getString("collectCount"));
 					jokeContent.setIslike(jokesList.getString("islike"));
 					jokeContent.setLikeCount(jokesList.getString("likeCount"));
+					jokeContent.setImageUrl(jokesList.getString("imagesUrl"));
 					datas.add(jokeContent);
 				}
 			}
