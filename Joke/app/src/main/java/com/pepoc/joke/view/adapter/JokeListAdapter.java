@@ -1,18 +1,23 @@
 package com.pepoc.joke.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.pepoc.joke.DeviceInfo;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.net.ImageLoadding;
+import com.pepoc.joke.util.Util;
 import com.pepoc.joke.view.activity.JokeContentActivity;
 import com.pepoc.joke.view.activity.PersonalCenterActivity;
 
@@ -29,9 +34,12 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
 
     private Context context;
     private List<JokeContent> datas = new ArrayList<>();
+    private int screenWidth ,imageViewWidth;
 
     public JokeListAdapter(Context context) {
         this.context = context;
+        screenWidth = DeviceInfo.getScreenSize((Activity) context)[0];
+        imageViewWidth = screenWidth - Util.dp2px(context, 20);
     }
 
     @Override
@@ -43,14 +51,29 @@ public class JokeListAdapter extends RecyclerView.Adapter<JokeListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         JokeContent jokeContent = datas.get(position);
-        holder.tvContent.setText(jokeContent.getContent());
-        ImageLoadding.load(context, jokeContent.getUserAvatar(), holder.ivUserAvatar);
+        if (TextUtils.isEmpty(jokeContent.getContent())) {
+            holder.tvContent.setVisibility(View.GONE);
+        } else {
+            holder.tvContent.setVisibility(View.VISIBLE);
+            holder.tvContent.setText(jokeContent.getContent());
+        }
+        ImageLoadding.loadAvatar(context, jokeContent.getUserAvatar(), holder.ivUserAvatar);
         holder.tvCreateTime.setText(jokeContent.getCreateTime());
         holder.tvJokeId.setText(jokeContent.getJokeId());
         holder.tvLikeCount.setText(jokeContent.getLikeCount());
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
         holder.tvUserName.setText(jokeContent.getUserNickName());
-        ImageLoadding.load(context, jokeContent.getImageUrl(), holder.ivJokeImage);
+
+        LinearLayout.LayoutParams params;
+        if (jokeContent.getImageWidth() > 0 && jokeContent.getImageHeight() > 0) {
+            float imageHeight = jokeContent.getImageHeight() * ((float)imageViewWidth / (float)jokeContent.getImageWidth());
+            params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
+
+        } else {
+            params = new LinearLayout.LayoutParams(imageViewWidth, imageViewWidth);
+        }
+        holder.ivJokeImage.setLayoutParams(params);
+        ImageLoadding.loadImage(context, jokeContent.getImageUrl(), holder.ivJokeImage);
 
         if ("1".equals(jokeContent.getIslike())) {
 //            holder.btnLikeJoke.setText("喜欢:" + "OK");

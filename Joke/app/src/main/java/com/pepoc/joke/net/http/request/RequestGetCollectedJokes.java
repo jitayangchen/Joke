@@ -1,6 +1,7 @@
 package com.pepoc.joke.net.http.request;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.net.http.HttpRequest;
@@ -39,7 +40,16 @@ public class RequestGetCollectedJokes extends HttpRequest {
 				jokeContent.setCollectCount(jokesList.getString("collectCount"));
 				jokeContent.setIslike(jokesList.getString("islike"));
 				jokeContent.setLikeCount(jokesList.getString("likeCount"));
-				jokeContent.setImageUrl(jokesList.getString("imagesUrl"));
+
+				String imageUrl = jokesList.getString("imagesUrl");
+				if (!TextUtils.isEmpty(imageUrl)) {
+					String[] str = imageUrl.split("&");
+					jokeContent.setImageUrl(str[0]);
+					if (str.length >= 3) {
+						jokeContent.setImageWidth(Integer.valueOf(str[1]));
+						jokeContent.setImageHeight(Integer.valueOf(str[2]));
+					}
+				}
 				datas.add(jokeContent);
 			}
 		}

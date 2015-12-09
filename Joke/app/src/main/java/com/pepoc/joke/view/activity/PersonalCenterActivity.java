@@ -74,7 +74,7 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         ivPersonalBackground.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
 
-        ImageLoadding.load(context, avatar, ivAvatar);
+        ImageLoadding.loadAvatar(context, avatar, ivAvatar);
 
         getData(true, userId);
     }

@@ -25,7 +25,9 @@ public class Config {
 	/**
 	 * 七牛图片尺寸100*100
 	 */
-	public final static String IMAGE_SIZE = "?imageView2/2/w/200/h/200/q/100/format/JPG";
+	public final static String IMAGE_SIZE_AVATAR = "?imageView2/2/w/200/h/200/q/100/format/JPG";
+
+	public final static String IMAGE_SIZE_JOKE_IMAGE = "?imageView2/2/w/800/h/800/q/100/format/JPG";
 	
 	/**
 	 * 微信AppID

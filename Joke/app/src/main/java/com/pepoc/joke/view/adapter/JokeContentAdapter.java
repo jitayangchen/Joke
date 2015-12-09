@@ -2,6 +2,7 @@ package com.pepoc.joke.view.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,16 +54,20 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (position == 0) {
             ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
-            ImageLoadding.load(context, jokeContent.getUserAvatar(), contentViewHolder.ivUserAvatar);
+            ImageLoadding.loadAvatar(context, jokeContent.getUserAvatar(), contentViewHolder.ivUserAvatar);
             contentViewHolder.tvUserName.setText(jokeContent.getUserNickName());
-            contentViewHolder.tvContent.setText(jokeContent.getContent());
-            ImageLoadding.load(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
+            if (TextUtils.isEmpty(jokeContent.getContent())) {
+                contentViewHolder.tvContent.setVisibility(View.GONE);
+            } else {
+                contentViewHolder.tvContent.setText(jokeContent.getContent());
+            }
+            ImageLoadding.loadImage(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
         } else {
             CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             JokeComment jokeComment = jokeComments.get(position - 1);
             commentViewHolder.tvComment.setText(jokeComment.getContent());
             commentViewHolder.tvUserName.setText(jokeComment.getUserNickName());
-            ImageLoadding.load(context, jokeComment.getUserAvatar(), commentViewHolder.ivUserAvatar);
+            ImageLoadding.loadAvatar(context, jokeComment.getUserAvatar(), commentViewHolder.ivUserAvatar);
         }
     }
 

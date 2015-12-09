@@ -16,6 +16,24 @@ public class JokeContent implements Parcelable {
 	private String likeCount;
 	private String collectCount;
 	private String imageUrl;
+	private int imageWidth;
+	private int imageHeight;
+
+	public int getImageWidth() {
+		return imageWidth;
+	}
+
+	public void setImageWidth(int imageWidth) {
+		this.imageWidth = imageWidth;
+	}
+
+	public int getImageHeight() {
+		return imageHeight;
+	}
+
+	public void setImageHeight(int imageHeight) {
+		this.imageHeight = imageHeight;
+	}
 
 	public String getImageUrl() {
 		return imageUrl;
@@ -102,6 +120,8 @@ public class JokeContent implements Parcelable {
 		dest.writeString(likeCount);
 		dest.writeString(collectCount);
 		dest.writeString(imageUrl);
+		dest.writeInt(imageWidth);
+		dest.writeInt(imageHeight);
 	}
 	
 	public static final Parcelable.Creator<JokeContent> CREATOR = new Creator<JokeContent>() {
@@ -120,6 +140,8 @@ public class JokeContent implements Parcelable {
 			jokeContent.likeCount = source.readString();
 			jokeContent.collectCount = source.readString();
 			jokeContent.imageUrl = source.readString();
+			jokeContent.imageWidth = source.readInt();
+			jokeContent.imageHeight = source.readInt();
 			return jokeContent;
 		}
 

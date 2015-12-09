@@ -202,8 +202,7 @@ public class MainActivity extends BaseActivity implements Observer {
     public void update(Observable observable, Object data) {
         UserInfo currentUser = UserManager.getCurrentUser();
         tvNickName.setText(currentUser.getNickName());
-        Logger.d("---------LoginObservable.getInstance().countObservers()------- " + LoginObservable.getInstance().countObservers());
-        ImageLoadding.load(context, currentUser.getAvatar(), ivUserAvatar);
+        ImageLoadding.loadAvatar(context, currentUser.getAvatar(), ivUserAvatar);
     }
 
     private void autoLogin() {
@@ -311,7 +310,7 @@ public class MainActivity extends BaseActivity implements Observer {
 
             @Override
             public void onHttpResponse(Object result) {
-                ImageLoadding.load(context, key, ivUserAvatar);
+                ImageLoadding.loadAvatar(context, key, ivUserAvatar);
                 UserManager.getCurrentUser().setAvatar(key);
             }
 

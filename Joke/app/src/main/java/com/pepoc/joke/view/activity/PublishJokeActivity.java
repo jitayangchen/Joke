@@ -1,6 +1,8 @@
 package com.pepoc.joke.view.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -20,7 +22,9 @@ import com.pepoc.joke.net.http.request.RequestAddJoke;
 import com.pepoc.joke.net.http.request.RequestUpToken;
 import com.qiniu.android.http.ResponseInfo;
 import com.qiniu.android.storage.UpCompletionHandler;
+import com.qiniu.android.storage.UpProgressHandler;
 import com.qiniu.android.storage.UploadManager;
+import com.qiniu.android.storage.UploadOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -141,6 +145,9 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
         requestAddJoke.putParam("content", content);
         requestAddJoke.putParam("user_id", uid);
         if (!TextUtils.isEmpty(imageUrl)) {
+            Bitmap bitmap = BitmapFactory.decodeFile(imageUrl);
+
+            key = key + "&" + bitmap.getWidth() + "&" + bitmap.getHeight();
             requestAddJoke.putParam("images_url", key);
         }
 
@@ -180,7 +187,13 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
                             Toast.makeText(context, "upload fail", Toast.LENGTH_SHORT).show();
                         }
                     }
-                }, null);
+                }, new UploadOptions(null, null, false, new UpProgressHandler() {
+
+                    @Override
+                    public void progress(String key, double percent) {
+                        Logger.i(percent + "");
+                    }
+                }, null));
             }
 
             @Override
