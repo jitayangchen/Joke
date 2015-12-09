@@ -14,6 +14,6 @@ public class ImageLoadding {
     public static void load(Context context, String url, ImageView imageView) {
         String imageUrl = Config.IMAGE_HOST + url;
 //        Logger.i(imageUrl);
-        Glide.with(context).load(imageUrl).into(imageView);
+        Glide.with(context).load(imageUrl).fitCenter().into(imageView);
     }
 }
