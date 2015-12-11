@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.orhanobut.logger.LogLevel;
 import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.LeakCanary;
 
 /**
  * Created by yangchen on 15-11-28.
@@ -24,6 +25,9 @@ public class JokeApplication extends Application {
      * App init
      */
     private void init() {
+
+        LeakCanary.install(this);
+
         Logger.init("Joke")                 // default PRETTYLOGGER or use just init()
                 .methodCount(3)                 // default 2
                 .hideThreadInfo()               // default shown

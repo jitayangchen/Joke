@@ -8,7 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.data.user.UserManager;
@@ -38,6 +40,8 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
 
     private int page = 1;
 
+    private LinearLayoutManager linearLayoutManager;
+
     public static JokeListFragment newInstance() {
         JokeListFragment fragment = new JokeListFragment();
         return fragment;
@@ -58,9 +62,15 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_joke_list, container, false);
-//        ButterKnife.bind(this, view);
         recyclerviewJokeList = (RecyclerView) view.findViewById(R.id.recyclerview_joke_list);
         swiperefreshJokeList = (SwipeRefreshLayout) view.findViewById(R.id.swiperefresh_joke_list);
+
+        view.findViewById(R.id.fab_scroll_top).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerviewJokeList.scrollToPosition(2);
+            }
+        });
         init();
         onLoadData();
         return view;
@@ -70,42 +80,76 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     public void init() {
         super.init();
         swiperefreshJokeList.setColorSchemeResources(R.color.colorAccent);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+
+        linearLayoutManager = new LinearLayoutManager(getContext());
         recyclerviewJokeList.setLayoutManager(linearLayoutManager);
         jokeListAdapter = new JokeListAdapter(getContext());
         recyclerviewJokeList.setAdapter(jokeListAdapter);
 
         swiperefreshJokeList.setOnRefreshListener(this);
+
+        recyclerviewJokeList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!isRequesting && RecyclerView.SCROLL_STATE_IDLE == 0 && linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1) {
+                    if (!isHasMoreData) {
+                        Toast.makeText(getContext(), "No More Data", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Logger.i("-----------------LoadMore------------------");
+                        getJokeData(false);
+                    }
+
+                }
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+//                Logger.i("findLastVisibleItemPosition() === " + linearLayoutManager.findLastVisibleItemPosition());
+            }
+        });
     }
 
     @Override
     public void onLoadData() {
         super.onLoadData();
 
-        getJokeData();
+        getJokeData(true);
     }
 
-    private void getJokeData() {
+    private void getJokeData(final boolean isRefresh) {
+        if (isRefresh) {
+            page = 1;
+        }
+        isRequesting = true;
         RequestGetJokes requestGetJokes = new RequestGetJokes(getContext(), new HttpRequestManager.OnHttpResponseListener() {
             @Override
             public void onHttpResponse(Object result) {
                 swiperefreshJokeList.setRefreshing(false);
+                isRequesting = false;
 
                 List<JokeContent> datas = (List<JokeContent>) result;
                 if (datas.size() < 20) {
                     isHasMoreData = false;
+                } else {
+                    isHasMoreData = true;
                 }
-                jokeListAdapter.getDatas().clear();
+                if (isRefresh) {
+                    jokeListAdapter.getDatas().clear();
+                }
                 jokeListAdapter.setDatas(datas);
                 jokeListAdapter.notifyDataSetChanged();
+                page++;
             }
 
             @Override
             public void onError() {
                 swiperefreshJokeList.setRefreshing(false);
-                page--;
+                isRequesting = false;
             }
         });
+
         requestGetJokes.putParam("page", String.valueOf(page));
         if (UserManager.getCurrentUser() == null) {
             requestGetJokes.putParam("userId", "-1");
@@ -133,11 +177,11 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
 
     @Override
     public void onRefresh() {
-        getJokeData();
+        getJokeData(true);
     }
 
     @Override
     public void update(Observable observable, Object data) {
-        getJokeData();
+        getJokeData(true);
     }
 }

@@ -68,16 +68,21 @@ public class PersonalCenterAdapter extends RecyclerView.Adapter<PersonalCenterAd
         holder.tvLikeCount.setText(jokeContent.getLikeCount());
         holder.tvCollectCount.setText(jokeContent.getCollectCount());
 
-        LinearLayout.LayoutParams params;
-        if (jokeContent.getImageWidth() > 0 && jokeContent.getImageHeight() > 0) {
-            float imageHeight = jokeContent.getImageHeight() * ((float)imageViewWidth / (float)jokeContent.getImageWidth());
-            params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
-
+        if (TextUtils.isEmpty(jokeContent.getImageUrl())) {
+            holder.ivJokeImage.setVisibility(View.GONE);
         } else {
-            params = new LinearLayout.LayoutParams(imageViewWidth, imageViewWidth);
+            holder.ivJokeImage.setVisibility(View.VISIBLE);
+            LinearLayout.LayoutParams params;
+            if (jokeContent.getImageWidth() > 0 && jokeContent.getImageHeight() > 0) {
+                float imageHeight = jokeContent.getImageHeight() * ((float) imageViewWidth / (float) jokeContent.getImageWidth());
+                params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
+
+            } else {
+                params = new LinearLayout.LayoutParams(imageViewWidth, imageViewWidth);
+            }
+            holder.ivJokeImage.setLayoutParams(params);
+            ImageLoadding.loadImage(context, jokeContent.getImageUrl(), holder.ivJokeImage);
         }
-        holder.ivJokeImage.setLayoutParams(params);
-        ImageLoadding.loadImage(context, jokeContent.getImageUrl(), holder.ivJokeImage);
         if ("1".equals(jokeContent.getIslike())) {
 //            holder.btnLikeJoke.setText("喜欢:" + "OK");
         } else {

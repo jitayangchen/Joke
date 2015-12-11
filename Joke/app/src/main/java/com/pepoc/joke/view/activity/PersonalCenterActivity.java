@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
-import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.ImageLoadding;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestGetPublishedJokes;
@@ -55,7 +55,7 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         String userId = intent.getStringExtra("UserId");
         String nickName = intent.getStringExtra("NickName");
         String avatar = intent.getStringExtra("avatar");
-        UserManager.getCurrentUser().getUserId();
+//        UserManager.getCurrentUser().getUserId();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,6 +74,7 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         ivPersonalBackground.setOnClickListener(this);
         ivAvatar.setOnClickListener(this);
 
+        Glide.with(this).load(R.mipmap.cheese_4).centerCrop().into(ivPersonalBackground);
         ImageLoadding.loadAvatar(context, avatar, ivAvatar);
 
         getData(true, userId);

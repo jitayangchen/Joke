@@ -56,12 +56,19 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
             ImageLoadding.loadAvatar(context, jokeContent.getUserAvatar(), contentViewHolder.ivUserAvatar);
             contentViewHolder.tvUserName.setText(jokeContent.getUserNickName());
+
             if (TextUtils.isEmpty(jokeContent.getContent())) {
                 contentViewHolder.tvContent.setVisibility(View.GONE);
             } else {
                 contentViewHolder.tvContent.setText(jokeContent.getContent());
             }
-            ImageLoadding.loadImage(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
+
+            if (TextUtils.isEmpty(jokeContent.getImageUrl())) {
+                contentViewHolder.ivJokeImage.setVisibility(View.GONE);
+            } else {
+                contentViewHolder.ivJokeImage.setVisibility(View.VISIBLE);
+                ImageLoadding.loadImage(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
+            }
         } else {
             CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
             JokeComment jokeComment = jokeComments.get(position - 1);
