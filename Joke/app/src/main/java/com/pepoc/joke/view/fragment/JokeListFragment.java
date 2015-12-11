@@ -106,7 +106,7 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-//                Logger.i("findLastVisibleItemPosition() === " + linearLayoutManager.findLastVisibleItemPosition());
+                Logger.i("findLastVisibleItemPosition() === " + linearLayoutManager.findLastVisibleItemPosition());
             }
         });
     }
