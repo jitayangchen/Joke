@@ -69,6 +69,12 @@ public class PublishJokeActivity extends BaseSwipeBackActivity implements View.O
         toolbar.setTitle(R.string.menu_write_joke);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         btnSubmit.setOnClickListener(this);
         btnAddPhoto.setOnClickListener(this);

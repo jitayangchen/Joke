@@ -2,6 +2,7 @@ package com.pepoc.joke.view.activity;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.pepoc.joke.R;
 
@@ -29,5 +30,11 @@ public class RegisterActivity extends BaseSwipeBackActivity {
         toolbar.setTitle(R.string.activity_register);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 }

@@ -1,5 +1,6 @@
 package com.pepoc.joke.view.adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.ImageLoadding;
 import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestCollectJoke;
+import com.pepoc.joke.net.http.request.RequestDeleteJoke;
 import com.pepoc.joke.net.http.request.RequestLikeJoke;
 
 import java.util.ArrayList;
@@ -108,6 +110,8 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         Button btnCollectJoke;
         @Bind(R.id.btn_like_joke)
         Button btnLikeJoke;
+        @Bind(R.id.btn_delete_joke)
+        Button btnDeleteJoke;
         @Bind(R.id.iv_joke_image)
         ImageView ivJokeImage;
 
@@ -126,6 +130,13 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 @Override
                 public void onClick(View v) {
                     collectJoke();
+                }
+            });
+
+            btnDeleteJoke.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteJoke();
                 }
             });
         }
@@ -190,5 +201,26 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         request.putParam("jokeId", jokeContent.getJokeId());
         request.putParam("userId", UserManager.getCurrentUser().getUserId());
         HttpRequestManager.getInstance().sendRequest(request);
+    }
+
+    private void deleteJoke() {
+        RequestDeleteJoke requestDeleteJoke = new RequestDeleteJoke(context, new HttpRequestManager.OnHttpResponseListener() {
+            @Override
+            public void onHttpResponse(Object result) {
+                String status = (String) result;
+                if ("1".equals(status)) {
+                    Toast.makeText(context, "Delete Success", Toast.LENGTH_LONG).show();
+                    ((Activity)context).finish();
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
+
+        requestDeleteJoke.putParam("jokeId", jokeContent.getJokeId());
+        HttpRequestManager.getInstance().sendRequest(requestDeleteJoke);
     }
 }
