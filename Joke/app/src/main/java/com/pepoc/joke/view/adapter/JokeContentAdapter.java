@@ -9,9 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pepoc.joke.Config;
+import com.pepoc.joke.DeviceInfo;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeComment;
 import com.pepoc.joke.data.bean.JokeContent;
@@ -21,6 +24,7 @@ import com.pepoc.joke.net.http.HttpRequestManager;
 import com.pepoc.joke.net.http.request.RequestCollectJoke;
 import com.pepoc.joke.net.http.request.RequestDeleteJoke;
 import com.pepoc.joke.net.http.request.RequestLikeJoke;
+import com.pepoc.joke.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +40,13 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private Context context;
     private JokeContent jokeContent;
     private List<JokeComment> jokeComments = new ArrayList<>();
+    private int screenWidth ,imageViewWidth;
 
     public JokeContentAdapter(Context context) {
         this.context = context;
+
+        screenWidth = DeviceInfo.getScreenSize((Activity) context)[0];
+        imageViewWidth = screenWidth - Util.dp2px(context, 20);
     }
 
     @Override
@@ -68,8 +76,33 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             if (TextUtils.isEmpty(jokeContent.getImageUrl())) {
                 contentViewHolder.ivJokeImage.setVisibility(View.GONE);
             } else {
+//                contentViewHolder.ivJokeImage.setVisibility(View.VISIBLE);
+//                ImageLoadding.loadImage(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
+
+
                 contentViewHolder.ivJokeImage.setVisibility(View.VISIBLE);
-                ImageLoadding.loadImage(context, jokeContent.getImageUrl(), contentViewHolder.ivJokeImage);
+                LinearLayout.LayoutParams params;
+                if (jokeContent.getImageWidth() > 0 && jokeContent.getImageHeight() > 0) {
+                    if (jokeContent.getImageHeight() >= 2000 && (jokeContent.getImageHeight() / jokeContent.getImageWidth()) >= 2) {
+                        float imageHeight = 1000 * ((float) imageViewWidth / 2 / (float) jokeContent.getImageWidth());
+                        params = new LinearLayout.LayoutParams(imageViewWidth / 2, (int) imageHeight);
+
+                        contentViewHolder.ivJokeImage.setLayoutParams(params);
+                        ImageLoadding.loadImage(context, jokeContent.getImageUrl() + Config.IMAGE_LONG_SIZE_JOKE_IMAGE, contentViewHolder.ivJokeImage);
+                    } else {
+                        float imageHeight = jokeContent.getImageHeight() * ((float) imageViewWidth / (float) jokeContent.getImageWidth());
+                        params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
+
+                        contentViewHolder.ivJokeImage.setLayoutParams(params);
+                        ImageLoadding.loadImage(context, jokeContent.getImageUrl() + Config.IMAGE_SIZE_JOKE_IMAGE, contentViewHolder.ivJokeImage);
+                    }
+
+                } else {
+                    params = new LinearLayout.LayoutParams(imageViewWidth, imageViewWidth);
+
+                    contentViewHolder.ivJokeImage.setLayoutParams(params);
+                    ImageLoadding.loadImage(context, jokeContent.getImageUrl() + Config.IMAGE_SIZE_JOKE_IMAGE, contentViewHolder.ivJokeImage);
+                }
             }
         } else {
             CommentViewHolder commentViewHolder = (CommentViewHolder) holder;
