@@ -25,9 +25,7 @@ import java.util.Observer;
 
 public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, Observer {
 
-//    @Bind(R.id.recyclerview_joke_list)
     private RecyclerView recyclerviewJokeList;
-//    @Bind(R.id.swiperefresh_joke_list)
     private SwipeRefreshLayout swiperefreshJokeList;
 
     private JokeListAdapter jokeListAdapter;
@@ -172,7 +170,6 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        ButterKnife.unbind(this);
     }
 
     @Override

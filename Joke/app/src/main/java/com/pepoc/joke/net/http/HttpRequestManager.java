@@ -80,6 +80,18 @@ public class HttpRequestManager {
 				}
 				request.getOnHttpResponseListener().onHttpResponse(result);
 			}
+
+			@Override
+			public void onStart() {
+				super.onStart();
+//				request.getOnHttpResponseListener().onStart();
+			}
+
+			@Override
+			public void onFinish() {
+				super.onFinish();
+//				request.getOnHttpResponseListener().onFinish();
+			}
 		});
 	}
 
@@ -107,6 +119,18 @@ public class HttpRequestManager {
 				}
 				request.getOnHttpResponseListener().onHttpResponse(result);
 			}
+
+			@Override
+			public void onStart() {
+				super.onStart();
+//				request.getOnHttpResponseListener().onStart();
+			}
+
+			@Override
+			public void onFinish() {
+				super.onFinish();
+//				request.getOnHttpResponseListener().onFinish();
+			}
 		});
 	}
 
@@ -126,8 +150,10 @@ public class HttpRequestManager {
 	}
 
 	public interface OnHttpResponseListener {
+//		void onStart();
 		void onHttpResponse(Object result);
 		void onError();
+//		void onFinish();
 	}
 	
 }

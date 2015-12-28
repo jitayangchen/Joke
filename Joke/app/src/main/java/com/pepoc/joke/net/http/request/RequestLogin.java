@@ -1,6 +1,7 @@
 package com.pepoc.joke.net.http.request;
 
 import android.content.Context;
+
 import com.pepoc.joke.data.user.UserInfo;
 import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.http.HttpRequest;
@@ -39,9 +40,8 @@ public class RequestLogin extends HttpRequest {
 			userInfo.setLoginType(userInfoObj.getString("loginType"));
 
 			UserManager.setCurrentUser(userInfo);
-
-			LoginObservable.getInstance().updateObserver(null);
 			Preference.saveAutoLogin(true);
+			LoginObservable.getInstance().updateObserver(null);
 			return true;
 		}
 		return false;
