@@ -68,7 +68,7 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
         view.findViewById(R.id.fab_scroll_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerviewJokeList.scrollToPosition(2);
+                recyclerviewJokeList.scrollToPosition(0);
             }
         });
         init();
@@ -106,7 +106,7 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Logger.i("findLastVisibleItemPosition() === " + linearLayoutManager.findLastVisibleItemPosition());
+//                Logger.i("findLastVisibleItemPosition() === " + linearLayoutManager.findLastVisibleItemPosition());
             }
         });
     }

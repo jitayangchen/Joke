@@ -13,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.orhanobut.logger.Logger;
+import com.pepoc.joke.Config;
 import com.pepoc.joke.DeviceInfo;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
@@ -70,14 +72,26 @@ public class CollectedJokeAdapter extends RecyclerView.Adapter<CollectedJokeAdap
             holder.ivJokeImage.setVisibility(View.VISIBLE);
             LinearLayout.LayoutParams params;
             if (jokeContent.getImageWidth() > 0 && jokeContent.getImageHeight() > 0) {
-                float imageHeight = jokeContent.getImageHeight() * ((float)imageViewWidth / (float)jokeContent.getImageWidth());
-                params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
+                if (jokeContent.getImageHeight() >= 2000 && (jokeContent.getImageHeight() / jokeContent.getImageWidth()) >= 2) {
+                    float imageHeight = 1000 * ((float) imageViewWidth / (float) jokeContent.getImageWidth());
+                    params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
+
+                    holder.ivJokeImage.setLayoutParams(params);
+                    ImageLoadding.loadImage(context, jokeContent.getImageUrl() + Config.IMAGE_LONG_SIZE_JOKE_IMAGE, holder.ivJokeImage);
+                } else {
+                    float imageHeight = jokeContent.getImageHeight() * ((float) imageViewWidth / (float) jokeContent.getImageWidth());
+                    params = new LinearLayout.LayoutParams(imageViewWidth, (int) imageHeight);
+
+                    holder.ivJokeImage.setLayoutParams(params);
+                    ImageLoadding.loadImage(context, jokeContent.getImageUrl() + Config.IMAGE_SIZE_JOKE_IMAGE, holder.ivJokeImage);
+                }
 
             } else {
                 params = new LinearLayout.LayoutParams(imageViewWidth, imageViewWidth);
+
+                holder.ivJokeImage.setLayoutParams(params);
+                ImageLoadding.loadImage(context, jokeContent.getImageUrl() + Config.IMAGE_SIZE_JOKE_IMAGE, holder.ivJokeImage);
             }
-            holder.ivJokeImage.setLayoutParams(params);
-            ImageLoadding.loadImage(context, jokeContent.getImageUrl(), holder.ivJokeImage);
         }
 
         if ("1".equals(jokeContent.getIslike())) {

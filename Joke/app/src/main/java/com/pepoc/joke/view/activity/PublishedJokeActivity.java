@@ -5,6 +5,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
@@ -54,6 +55,12 @@ public class PublishedJokeActivity extends BaseSwipeBackActivity implements Swip
         toolbar.setTitle(R.string.menu_published);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         swiperefreshPublishedJoke.setColorSchemeResources(R.color.colorAccent);
         swiperefreshPublishedJoke.setOnRefreshListener(this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
