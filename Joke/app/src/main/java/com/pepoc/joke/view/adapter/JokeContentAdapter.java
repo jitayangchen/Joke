@@ -11,19 +11,14 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.pepoc.joke.Config;
 import com.pepoc.joke.DeviceInfo;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeComment;
 import com.pepoc.joke.data.bean.JokeContent;
-import com.pepoc.joke.data.user.UserManager;
 import com.pepoc.joke.net.ImageLoadding;
-import com.pepoc.joke.net.http.HttpRequestManager;
-import com.pepoc.joke.net.http.request.RequestCollectJoke;
-import com.pepoc.joke.net.http.request.RequestDeleteJoke;
-import com.pepoc.joke.net.http.request.RequestLikeJoke;
+import com.pepoc.joke.presenter.JokeContentPresenter;
 import com.pepoc.joke.util.Util;
 
 import java.util.ArrayList;
@@ -41,9 +36,11 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
     private JokeContent jokeContent;
     private List<JokeComment> jokeComments = new ArrayList<>();
     private int screenWidth ,imageViewWidth;
+    private JokeContentPresenter jokeContentPresenter;
 
-    public JokeContentAdapter(Context context) {
+    public JokeContentAdapter(Context context, JokeContentPresenter jokeContentPresenter) {
         this.context = context;
+        this.jokeContentPresenter = jokeContentPresenter;
 
         screenWidth = DeviceInfo.getScreenSize((Activity) context)[0];
         imageViewWidth = screenWidth - Util.dp2px(context, 20);
@@ -155,21 +152,21 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
             btnLikeJoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    likeJoke();
+                    jokeContentPresenter.likeJoke(context, jokeContent.getJokeId());
                 }
             });
 
             btnCollectJoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    collectJoke();
+                    jokeContentPresenter.collectJoke(context, jokeContent.getJokeId());
                 }
             });
 
             btnDeleteJoke.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    deleteJoke();
+                    jokeContentPresenter.deleteJoke(context, jokeContent.getJokeId());
                 }
             });
         }
@@ -190,70 +187,4 @@ public class JokeContentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
         }
     }
 
-    private void collectJoke() {
-        RequestCollectJoke request = new RequestCollectJoke(context, new HttpRequestManager.OnHttpResponseListener() {
-
-            @Override
-            public void onHttpResponse(Object result) {
-                String status = (String) result;
-                if ("1".equals(status)) {
-                    Toast.makeText(context, "Collect Success", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        request.putParam("jokeId", jokeContent.getJokeId());
-        request.putParam("userId", UserManager.getCurrentUser().getUserId());
-        HttpRequestManager.getInstance().sendRequest(request);
-    }
-
-    private void likeJoke() {
-        RequestLikeJoke request = new RequestLikeJoke(context, new HttpRequestManager.OnHttpResponseListener() {
-
-            @Override
-            public void onHttpResponse(Object result) {
-                String status = (String) result;
-                if ("1".equals(status)) {
-                    Toast.makeText(context, "Like Success", Toast.LENGTH_LONG).show();
-                }
-            }
-
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        request.putParam("jokeId", jokeContent.getJokeId());
-        request.putParam("userId", UserManager.getCurrentUser().getUserId());
-        HttpRequestManager.getInstance().sendRequest(request);
-    }
-
-    private void deleteJoke() {
-        RequestDeleteJoke requestDeleteJoke = new RequestDeleteJoke(context, new HttpRequestManager.OnHttpResponseListener() {
-            @Override
-            public void onHttpResponse(Object result) {
-                String status = (String) result;
-                if ("1".equals(status)) {
-                    Toast.makeText(context, "Delete Success", Toast.LENGTH_LONG).show();
-                    ((Activity)context).finish();
-                }
-            }
-
-            @Override
-            public void onError() {
-
-            }
-        });
-
-        requestDeleteJoke.putParam("jokeId", jokeContent.getJokeId());
-        HttpRequestManager.getInstance().sendRequest(requestDeleteJoke);
-    }
 }

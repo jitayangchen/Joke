@@ -17,18 +17,17 @@ import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeComment;
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.data.user.UserManager;
-import com.pepoc.joke.net.http.HttpRequestManager;
-import com.pepoc.joke.net.http.request.RequestComment;
-import com.pepoc.joke.net.http.request.RequestGetComment;
+import com.pepoc.joke.presenter.JokeContentPresenter;
 import com.pepoc.joke.util.Util;
 import com.pepoc.joke.view.adapter.JokeContentAdapter;
+import com.pepoc.joke.view.iview.IJokeContentView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class JokeContentActivity extends BaseSwipeBackActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener {
+public class JokeContentActivity extends BaseSwipeBackActivity implements View.OnClickListener, SwipeRefreshLayout.OnRefreshListener, IJokeContentView<JokeComment> {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -45,6 +44,7 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
 
     private JokeContent jokeContent;
     private JokeContentAdapter jokeContentAdapter;
+    private JokeContentPresenter jokeContentPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,12 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
         setContentView(R.layout.activity_joke_content);
         ButterKnife.bind(this);
 
+        jokeContentPresenter = new JokeContentPresenter(this);
+
         Intent intent = getIntent();
         jokeContent = intent.getParcelableExtra("JokeContent");
         init();
-        getComment();
+        jokeContentPresenter.getComment(context, jokeContent.getJokeId());
     }
 
     @Override
@@ -76,7 +78,7 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context);
         recyclerviewJokeContent.setLayoutManager(linearLayoutManager);
 
-        jokeContentAdapter = new JokeContentAdapter(context);
+        jokeContentAdapter = new JokeContentAdapter(context, jokeContentPresenter);
         jokeContentAdapter.setJokeContent(jokeContent);
         recyclerviewJokeContent.setAdapter(jokeContentAdapter);
 
@@ -92,7 +94,7 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
                     if (TextUtils.isEmpty(commentContent)) {
                         Toast.makeText(context, "评论内容不能为空", Toast.LENGTH_SHORT).show();
                     } else {
-                        comment(commentContent);
+                        jokeContentPresenter.comment(context, jokeContent.getJokeId(), commentContent);
                     }
                 } else {
                     Toast.makeText(context, "登录后才能评论", Toast.LENGTH_SHORT).show();
@@ -101,65 +103,38 @@ public class JokeContentActivity extends BaseSwipeBackActivity implements View.O
         }
     }
 
-    /**
-     * 获取评论
-     */
-    private void getComment() {
-        RequestGetComment request = new RequestGetComment(context, new HttpRequestManager.OnHttpResponseListener() {
-
-            @Override
-            public void onHttpResponse(Object result) {
-                List<JokeComment> jokeComments = (List<JokeComment>) result;
-                jokeContentAdapter.setJokeComments(jokeComments);
-                jokeContentAdapter.notifyDataSetChanged();
-                swiperefreshJokeContent.setRefreshing(false);
-            }
-
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-                swiperefreshJokeContent.setRefreshing(false);
-            }
-        });
-
-        request.putParam("jokeId", jokeContent.getJokeId());
-
-        HttpRequestManager.getInstance().sendRequest(request);
-    }
-
-    /**
-     * 发表评论
-     */
-    private void comment(String commentContent) {
-        RequestComment request = new RequestComment(context, new HttpRequestManager.OnHttpResponseListener() {
-
-            @Override
-            public void onHttpResponse(Object result) {
-                boolean isSuccess = (Boolean) result;
-                if (isSuccess) {
-                    Toast.makeText(context, "comment success", Toast.LENGTH_SHORT).show();
-                    etJokeComment.setText("");
-                    Util.hiddenSoftKeyborad(etJokeComment, context);
-                    getComment();
-                }
-            }
-
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        request.putParam("content", commentContent);
-        request.putParam("jokeId", jokeContent.getJokeId());
-        request.putParam("userId", UserManager.getCurrentUser().getUserId());
-
-        HttpRequestManager.getInstance().sendRequest(request);
+    @Override
+    public void onRefresh() {
+        jokeContentPresenter.getComment(context, jokeContent.getJokeId());
     }
 
     @Override
-    public void onRefresh() {
-        getComment();
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void updateCommentData(List<JokeComment> datas) {
+        swiperefreshJokeContent.setRefreshing(false);
+        jokeContentAdapter.setJokeComments(datas);
+        jokeContentAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void commentSuccess() {
+        Toast.makeText(context, "comment success", Toast.LENGTH_SHORT).show();
+        etJokeComment.setText("");
+        Util.hiddenSoftKeyborad(etJokeComment, context);
+        jokeContentPresenter.getComment(context, jokeContent.getJokeId());
+    }
+
+    @Override
+    public void onError() {
+        swiperefreshJokeContent.setRefreshing(false);
     }
 }

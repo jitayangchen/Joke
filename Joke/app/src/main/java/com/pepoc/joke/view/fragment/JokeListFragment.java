@@ -1,6 +1,5 @@
 package com.pepoc.joke.view.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,33 +11,24 @@ import android.widget.Toast;
 
 import com.orhanobut.logger.Logger;
 import com.pepoc.joke.R;
-import com.pepoc.joke.data.bean.JokeContent;
-import com.pepoc.joke.data.user.UserManager;
-import com.pepoc.joke.net.http.HttpRequestManager;
-import com.pepoc.joke.net.http.request.RequestGetJokes;
 import com.pepoc.joke.observer.LoginObservable;
+import com.pepoc.joke.presenter.JokeListPresenter;
 import com.pepoc.joke.view.adapter.JokeListAdapter;
+import com.pepoc.joke.view.iview.IJokeListView;
 
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, Observer {
+public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, IJokeListView, Observer {
 
     private RecyclerView recyclerviewJokeList;
     private SwipeRefreshLayout swiperefreshJokeList;
 
     private JokeListAdapter jokeListAdapter;
 
-    /** 是否还有更多数据 */
-    private boolean isHasMoreData = true;
-
-    /** 是否正在请求数据 */
-    private boolean isRequesting = false;
-
-    private int page = 1;
-
     private LinearLayoutManager linearLayoutManager;
+
+    private JokeListPresenter jokeListPresenter;
 
     public static JokeListFragment newInstance() {
         JokeListFragment fragment = new JokeListFragment();
@@ -70,6 +60,7 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
             }
         });
         init();
+        jokeListPresenter = new JokeListPresenter(this, jokeListAdapter);
         onLoadData();
         return view;
     }
@@ -90,12 +81,12 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                if (!isRequesting && RecyclerView.SCROLL_STATE_IDLE == 0 && linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1) {
-                    if (!isHasMoreData) {
+                if (!jokeListPresenter.isRequesting() && RecyclerView.SCROLL_STATE_IDLE == 0 && linearLayoutManager.findLastVisibleItemPosition() == linearLayoutManager.getItemCount() - 1) {
+                    if (!jokeListPresenter.isHasMoreData()) {
                         Toast.makeText(getContext(), "No More Data", Toast.LENGTH_SHORT).show();
                     } else {
                         Logger.i("-----------------LoadMore------------------");
-                        getJokeData(false);
+                        jokeListPresenter.getJokeData(getContext(), false);
                     }
 
                 }
@@ -113,72 +104,36 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
     public void onLoadData() {
         super.onLoadData();
 
-        getJokeData(true);
-    }
-
-    private void getJokeData(final boolean isRefresh) {
-        if (isRefresh) {
-            page = 1;
-        }
-        isRequesting = true;
-        RequestGetJokes requestGetJokes = new RequestGetJokes(getContext(), new HttpRequestManager.OnHttpResponseListener() {
-            @Override
-            public void onHttpResponse(Object result) {
-                swiperefreshJokeList.setRefreshing(false);
-                isRequesting = false;
-
-                List<JokeContent> datas = (List<JokeContent>) result;
-                if (datas.size() < 20) {
-                    isHasMoreData = false;
-                } else {
-                    isHasMoreData = true;
-                }
-                if (isRefresh) {
-                    jokeListAdapter.getDatas().clear();
-                }
-                jokeListAdapter.setDatas(datas);
-                jokeListAdapter.notifyDataSetChanged();
-                page++;
-            }
-
-            @Override
-            public void onError() {
-                swiperefreshJokeList.setRefreshing(false);
-                isRequesting = false;
-            }
-        });
-
-        requestGetJokes.putParam("page", String.valueOf(page));
-        if (UserManager.getCurrentUser() == null) {
-            requestGetJokes.putParam("userId", "-1");
-        } else {
-            requestGetJokes.putParam("userId", UserManager.getCurrentUser().getUserId());
-        }
-        HttpRequestManager.getInstance().sendRequest(requestGetJokes);
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+        jokeListPresenter.getJokeData(getContext(), true);
     }
 
     @Override
     public void onRefresh() {
-        getJokeData(true);
+        jokeListPresenter.getJokeData(getContext(), true);
     }
 
     @Override
     public void update(Observable observable, Object data) {
-        getJokeData(true);
+        jokeListPresenter.getJokeData(getContext(), true);
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void updateData() {
+        swiperefreshJokeList.setRefreshing(false);
+    }
+
+    @Override
+    public void onError() {
+        swiperefreshJokeList.setRefreshing(false);
     }
 }

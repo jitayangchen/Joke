@@ -13,13 +13,13 @@ import com.bumptech.glide.Glide;
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
 import com.pepoc.joke.net.ImageLoadding;
-import com.pepoc.joke.net.http.HttpRequestManager;
-import com.pepoc.joke.net.http.request.RequestGetPublishedJokes;
+import com.pepoc.joke.presenter.PersonalCenterPresenter;
 import com.pepoc.joke.view.adapter.PersonalCenterAdapter;
+import com.pepoc.joke.view.iview.IPersonalCenterView;
 
 import java.util.List;
 
-public class PersonalCenterActivity extends BaseSwipeBackActivity implements View.OnClickListener {
+public class PersonalCenterActivity extends BaseSwipeBackActivity implements View.OnClickListener, IPersonalCenterView<JokeContent> {
 
     private RecyclerView recyclerviewPublishedJoke;
 
@@ -31,19 +31,13 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
 
     private CollapsingToolbarLayout collapsingToolbar;
 
-    /** 是否还有更多数据 */
-    private boolean isHasMoreData = true;
-
-    /** 是否正在请求数据 */
-    private boolean isRequesting = false;
-
-    private int page = 1;
+    private PersonalCenterPresenter personalCenterPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_personal_center);
-
+        personalCenterPresenter = new PersonalCenterPresenter(this);
         init();
     }
 
@@ -55,7 +49,6 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         String userId = intent.getStringExtra("UserId");
         String nickName = intent.getStringExtra("NickName");
         String avatar = intent.getStringExtra("avatar");
-//        UserManager.getCurrentUser().getUserId();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -83,7 +76,7 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         Glide.with(this).load(R.mipmap.cheese_4).centerCrop().into(ivPersonalBackground);
         ImageLoadding.loadAvatar(context, avatar, ivAvatar);
 
-        getData(true, userId);
+        personalCenterPresenter.getData(context, true, userId);
     }
 
     @Override
@@ -98,47 +91,32 @@ public class PersonalCenterActivity extends BaseSwipeBackActivity implements Vie
         }
     }
 
-    /**
-     * 获取数据
-     * @param isRefresh true:是刷新     false:加载更多
-     */
-    private void getData(final boolean isRefresh, String userId) {
+    @Override
+    public void onSuccess() {
+
+    }
+
+    @Override
+    public void onFail() {
+
+    }
+
+    @Override
+    public void updateData(List<JokeContent> datas, boolean isRefresh) {
         if (isRefresh) {
-            page = 1;
-            isHasMoreData = true;
-        } else {
-            if (!isHasMoreData) {
-//				Toast.makeText(context, "没有更多的数据了", Toast.LENGTH_SHORT).show();
-                return ;
-            }
-            page++;
+            jokeListAdapter.getDatas().clear();
         }
+        jokeListAdapter.setDatas(datas);
+        jokeListAdapter.notifyDataSetChanged();
+    }
 
-        RequestGetPublishedJokes request = new RequestGetPublishedJokes(context, new HttpRequestManager.OnHttpResponseListener() {
+    @Override
+    public void showLoading() {
 
-            @Override
-            public void onHttpResponse(Object result) {
-                List<JokeContent> datas = (List<JokeContent>) result;
-                if (datas.size() < 20) {
-                    isHasMoreData = false;
-                }
-                if (isRefresh) {
-                    jokeListAdapter.getDatas().clear();
-                }
-                jokeListAdapter.setDatas(datas);
-                jokeListAdapter.notifyDataSetChanged();
-            }
+    }
 
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
+    @Override
+    public void hideLoading() {
 
-            }
-        });
-
-        request.putParam("page", String.valueOf(page));
-        request.putParam("userId", userId);
-
-        HttpRequestManager.getInstance().sendRequest(request);
     }
 }

@@ -10,14 +10,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.pepoc.joke.R;
-import com.pepoc.joke.net.http.HttpRequestManager;
-import com.pepoc.joke.net.http.request.RequestLogin;
+import com.pepoc.joke.presenter.LoginPresenter;
 import com.pepoc.joke.util.Preference;
+import com.pepoc.joke.view.iview.ILoginView;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class LoginActivity extends BaseSwipeBackActivity implements View.OnClickListener {
+public class LoginActivity extends BaseSwipeBackActivity implements View.OnClickListener, ILoginView {
 
     @Bind(R.id.et_account_number)
     EditText etAccountNumber;
@@ -30,14 +30,14 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
     @Bind(R.id.toolbar)
     Toolbar toolbar;
 
-    private String accountNumber, password;
+    private LoginPresenter loginPresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-
+        loginPresenter = new LoginPresenter(this);
         init();
     }
 
@@ -77,7 +77,14 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
-                login();
+                String accountNumber = etAccountNumber.getText().toString();
+                String password = etPassword.getText().toString();
+
+                if (TextUtils.isEmpty(accountNumber) || TextUtils.isEmpty(password)) {
+                    Toast.makeText(context, "account number or password null", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                loginPresenter.login(accountNumber, password);
                 break;
             case R.id.btn_register:
                 Intent registerIntent = new Intent(context, RegisterActivity.class);
@@ -89,42 +96,30 @@ public class LoginActivity extends BaseSwipeBackActivity implements View.OnClick
         }
     }
 
-    private void login() {
-        accountNumber = etAccountNumber.getText().toString();
-        password = etPassword.getText().toString();
-        if (TextUtils.isEmpty(accountNumber) || TextUtils.isEmpty(password)) {
-            Toast.makeText(context, "account number or password null", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        RequestLogin requestLogin = new RequestLogin(context, new HttpRequestManager.OnHttpResponseListener() {
-
-            @Override
-            public void onHttpResponse(Object result) {
-                boolean isLoginSuccess = (Boolean) result;
-                if (isLoginSuccess) {
-                    Toast.makeText(context, "login success", Toast.LENGTH_SHORT).show();
-                    finish();
-
-                } else {
-                    Toast.makeText(context, "login failed", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        requestLogin.putParam("accountNumber", accountNumber);
-        requestLogin.putParam("password", password);
-
-        HttpRequestManager.getInstance().sendRequest(requestLogin);
+    @Override
+    public void onLoginSuccess() {
+        Toast.makeText(context, "login success", Toast.LENGTH_SHORT).show();
+        finish();
     }
 
-//    @Override
-//    public void update(Observable observable, Object data) {
-//        finish();
-//    }
+    @Override
+    public void onLoginFail() {
+        Toast.makeText(context, "login failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onError() {
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
 }

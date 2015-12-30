@@ -9,17 +9,16 @@ import android.view.View;
 
 import com.pepoc.joke.R;
 import com.pepoc.joke.data.bean.JokeContent;
-import com.pepoc.joke.data.user.UserManager;
-import com.pepoc.joke.net.http.HttpRequestManager;
-import com.pepoc.joke.net.http.request.RequestGetPublishedJokes;
+import com.pepoc.joke.presenter.PublishedJokePresenter;
 import com.pepoc.joke.view.adapter.JokeListAdapter;
+import com.pepoc.joke.view.iview.IPublishedJokeView;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class PublishedJokeActivity extends BaseSwipeBackActivity implements SwipeRefreshLayout.OnRefreshListener {
+public class PublishedJokeActivity extends BaseSwipeBackActivity implements SwipeRefreshLayout.OnRefreshListener, IPublishedJokeView<JokeContent> {
 
     @Bind(R.id.toolbar)
     Toolbar toolbar;
@@ -30,22 +29,16 @@ public class PublishedJokeActivity extends BaseSwipeBackActivity implements Swip
 
     private JokeListAdapter jokeListAdapter;
 
-    /** 是否还有更多数据 */
-    private boolean isHasMoreData = true;
-
-    /** 是否正在请求数据 */
-    private boolean isRequesting = false;
-
-    private int page = 1;
+    private PublishedJokePresenter publishedJokePresenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_published_joke);
         ButterKnife.bind(this);
-
+        publishedJokePresenter = new PublishedJokePresenter(this);
         init();
-        getData(true);
+        publishedJokePresenter.getData(context, true);
     }
 
     @Override
@@ -72,51 +65,35 @@ public class PublishedJokeActivity extends BaseSwipeBackActivity implements Swip
 
     @Override
     public void onRefresh() {
-        getData(true);
+        publishedJokePresenter.getData(context, true);
     }
 
-    /**
-     * 获取数据
-     * @param isRefresh true:是刷新     false:加载更多
-     */
-    private void getData(final boolean isRefresh) {
+    @Override
+    public void onSuccess() {
+        swiperefreshPublishedJoke.setRefreshing(false);
+    }
+
+    @Override
+    public void onFail() {
+        swiperefreshPublishedJoke.setRefreshing(false);
+    }
+
+    @Override
+    public void updateData(List<JokeContent> datas, boolean isRefresh) {
         if (isRefresh) {
-            page = 1;
-            isHasMoreData = true;
-        } else {
-            if (!isHasMoreData) {
-//				Toast.makeText(context, "没有更多的数据了", Toast.LENGTH_SHORT).show();
-                return ;
-            }
-            page++;
+            jokeListAdapter.getDatas().clear();
         }
+        jokeListAdapter.setDatas(datas);
+        jokeListAdapter.notifyDataSetChanged();
+    }
 
-        RequestGetPublishedJokes request = new RequestGetPublishedJokes(context, new HttpRequestManager.OnHttpResponseListener() {
+    @Override
+    public void showLoading() {
 
-            @Override
-            public void onHttpResponse(Object result) {
-                List<JokeContent> datas = (List<JokeContent>) result;
-                if (datas.size() < 20) {
-                    isHasMoreData = false;
-                }
-                if (isRefresh) {
-                    jokeListAdapter.getDatas().clear();
-                }
-                jokeListAdapter.setDatas(datas);
-                jokeListAdapter.notifyDataSetChanged();
-                swiperefreshPublishedJoke.setRefreshing(false);
-            }
+    }
 
-            @Override
-            public void onError() {
-                // TODO Auto-generated method stub
-                swiperefreshPublishedJoke.setRefreshing(false);
-            }
-        });
+    @Override
+    public void hideLoading() {
 
-        request.putParam("page", String.valueOf(page));
-        request.putParam("userId", UserManager.getCurrentUser().getUserId());
-
-        HttpRequestManager.getInstance().sendRequest(request);
     }
 }
