@@ -56,7 +56,8 @@ public class JokeListFragment extends BaseFragment implements SwipeRefreshLayout
         view.findViewById(R.id.fab_scroll_top).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerviewJokeList.scrollToPosition(0);
+//                recyclerviewJokeList.scrollToPosition(0);
+                recyclerviewJokeList.smoothScrollToPosition(0);
             }
         });
         init();
